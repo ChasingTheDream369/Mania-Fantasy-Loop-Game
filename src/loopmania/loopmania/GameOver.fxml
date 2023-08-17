@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.4" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Button fx:id="restartGame" layoutX="374.0" layoutY="313.0" mnemonicParsing="false" onAction="#switchToGame" prefHeight="37.0" prefWidth="185.0" text="Restart Game" />
+      <Button fx:id="exitGame" layoutX="30.0" layoutY="313.0" mnemonicParsing="false" onAction="#endGame" prefHeight="37.0" prefWidth="185.0" text="Exit" />
+      <Label fx:id="gameOver" alignment="CENTER" layoutX="163.0" layoutY="150.0" prefHeight="56.0" prefWidth="286.0" text="GAME OVER">
+         <font>
+            <Font size="32.0" />
+         </font>
+      </Label>
+   </children>
+</Pane>

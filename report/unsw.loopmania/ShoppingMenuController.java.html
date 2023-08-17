@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ShoppingMenuController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCo Coverage Report</a> &gt; <a href="index.source.html" class="el_package">unsw.loopmania</a> &gt; <span class="el_source">ShoppingMenuController.java</span></div><h1>ShoppingMenuController.java</h1><pre class="source lang-java linenums">package unsw.loopmania;
+
+import java.io.IOException;
+
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
+import javafx.util.converter.NumberStringConverter;
+
+public class ShoppingMenuController {
+    @FXML
+    private Button buy;
+
+    @FXML
+    private Button sell;
+
+    @FXML
+    private Button resumeGame;
+
+    @FXML
+    private Button swordButton;
+
+    @FXML
+    private Button staffButton;
+
+    @FXML
+    private Button stakeButton;
+
+    @FXML
+    private Button shieldButton;
+
+    @FXML
+    private Button helmetButton;
+
+    @FXML
+    private Button armourButton;
+
+    @FXML
+    private Button healthPotionButton;
+
+    @FXML
+    private ImageView swordImageOn;
+
+    @FXML
+    private ImageView staffImageOn;
+
+    @FXML
+    private ImageView stakeImageOn;
+
+    @FXML
+    private ImageView shieldImageOn;
+
+    @FXML
+    private ImageView helmetImageOn;
+
+    @FXML
+    private ImageView armourImageOn;
+
+    @FXML
+    private ImageView healthPotionImageOn;
+
+    @FXML
+    private ImageView goldImageOn;
+
+    @FXML
+    private Label goldValue;
+
+    @FXML
+    private Label healthValue;
+
+    @FXML
+    private Label price;
+
+    @FXML
+    private IntegerProperty itemPrice;
+
+    @FXML
+    private StringProperty itemSelected;
+
+    private int numHealthPotionsBought;
+    private int numProtectiveGearBought;
+    private Character character;
+    private LoopManiaWorldController worldController;
+
+    ///////////////////////////////////////////////////////////////////////
+    //    THIS FILE IS CONSIDERED TO BE INCOMPLETE. WE INTEND ON         //
+    //    DOING BETTER DESIGN; PASSING THE MAINCONTROLLER IN DOESNT      //
+    //    LOOK LIKE GOOD DESIGN. HENCE, WE'D APPRECIATE IF THE BACK      //
+    //    END IMPLEMENTATION HERE IS MARKED IN MILESTONE 3               //
+    //                                                                   //
+    //    Nonetheless, it works partly...                                //
+    //    so we thought we'd submit it incase.                           //
+    ///////////////////////////////////////////////////////////////////////
+
+<span class="nc" id="L101">    public ShoppingMenuController(Character character, LoopManiaWorldController worldController) {</span>
+
+<span class="nc" id="L103">        this.worldController = worldController;</span>
+<span class="nc" id="L104">        this.numProtectiveGearBought = 0;</span>
+<span class="nc" id="L105">        this.numHealthPotionsBought = 0;</span>
+<span class="nc" id="L106">        buy = new Button();</span>
+<span class="nc" id="L107">        sell = new Button();</span>
+<span class="nc" id="L108">        resumeGame = new Button();</span>
+<span class="nc" id="L109">        swordButton = new Button();</span>
+<span class="nc" id="L110">        staffButton = new Button();</span>
+<span class="nc" id="L111">        stakeButton = new Button();</span>
+<span class="nc" id="L112">        shieldButton = new Button();</span>
+<span class="nc" id="L113">        helmetButton = new Button();</span>
+<span class="nc" id="L114">        armourButton = new Button();</span>
+<span class="nc" id="L115">        healthPotionButton = new Button();</span>
+
+<span class="nc" id="L117">        goldValue = new Label();</span>
+<span class="nc" id="L118">        healthValue = new Label();</span>
+<span class="nc" id="L119">        price = new Label();</span>
+
+<span class="nc" id="L121">        swordImageOn = new ImageView();</span>
+<span class="nc" id="L122">        stakeImageOn = new ImageView();</span>
+<span class="nc" id="L123">        staffImageOn = new ImageView();</span>
+<span class="nc" id="L124">        shieldImageOn = new ImageView();</span>
+<span class="nc" id="L125">        helmetImageOn = new ImageView();</span>
+<span class="nc" id="L126">        armourImageOn = new ImageView();</span>
+<span class="nc" id="L127">        healthPotionImageOn = new ImageView();</span>
+
+<span class="nc" id="L129">        itemPrice = new SimpleIntegerProperty(0);</span>
+<span class="nc" id="L130">        itemSelected = new SimpleStringProperty(&quot;&quot;);</span>
+
+<span class="nc" id="L132">        this.character = character;</span>
+<span class="nc" id="L133">    }</span>
+
+    /**
+     * facilitates switching to main game
+     */
+    private MenuSwitcher gameSwitcher;
+
+    public void setGameSwitcher(MenuSwitcher gameSwitcher){
+<span class="nc" id="L141">        this.gameSwitcher = gameSwitcher;</span>
+<span class="nc" id="L142">    }</span>
+
+    /**
+     * facilitates switching to main game upon button click
+     * @throws IOException
+     */
+    @FXML
+    private void switchToGame() throws IOException {
+<span class="nc" id="L150">        numProtectiveGearBought = 0;</span>
+<span class="nc" id="L151">        numHealthPotionsBought = 0;</span>
+<span class="nc" id="L152">        gameSwitcher.switchMenu();</span>
+<span class="nc" id="L153">    }</span>
+
+
+    @FXML
+    public void handleBuy(ActionEvent event) {
+<span class="nc bnc" id="L158" title="All 2 branches missed.">        if (itemPrice.get() &gt; character.getGold()) {</span>
+<span class="nc" id="L159">            return;</span>
+        }
+
+<span class="nc" id="L162">        int purchaseSuccessful = 0;</span>
+<span class="nc bnc" id="L163" title="All 8 branches missed.">        switch (itemSelected.get()) {</span>
+            case &quot;Sword&quot;:
+<span class="nc" id="L165">                worldController.loadSword();</span>
+<span class="nc" id="L166">                purchaseSuccessful = 1;</span>
+<span class="nc" id="L167">                break;</span>
+
+            case &quot;Staff&quot;:
+<span class="nc" id="L170">                worldController.loadStaff();</span>
+<span class="nc" id="L171">                purchaseSuccessful = 1;</span>
+<span class="nc" id="L172">                break;</span>
+
+            case &quot;Stake&quot;:
+<span class="nc" id="L175">                worldController.loadStake();</span>
+<span class="nc" id="L176">                purchaseSuccessful = 1;</span>
+<span class="nc" id="L177">                break;</span>
+
+            case &quot;Shield&quot;:
+<span class="nc bnc" id="L180" title="All 4 branches missed.">                if ((numProtectiveGearBought == 1 &amp;&amp;  worldController.getGameMode().equals(&quot;Berserker&quot;)))</span>
+<span class="nc" id="L181">                    break;</span>
+
+<span class="nc" id="L183">                worldController.loadShield();</span>
+<span class="nc" id="L184">                numProtectiveGearBought++;</span>
+<span class="nc" id="L185">                purchaseSuccessful = 1;</span>
+
+<span class="nc" id="L187">                break;</span>
+            case &quot;Helmet&quot;:
+<span class="nc bnc" id="L189" title="All 4 branches missed.">                if ((numProtectiveGearBought == 1 &amp;&amp;  worldController.getGameMode().equals(&quot;Berserker&quot;)))</span>
+<span class="nc" id="L190">                    break;</span>
+
+<span class="nc" id="L192">                worldController.loadHelmet();</span>
+<span class="nc" id="L193">                numProtectiveGearBought++;</span>
+<span class="nc" id="L194">                purchaseSuccessful = 1;</span>
+                
+<span class="nc" id="L196">                break;</span>
+            case &quot;Armour&quot;:
+<span class="nc bnc" id="L198" title="All 4 branches missed.">                if ((numProtectiveGearBought == 1 &amp;&amp;  worldController.getGameMode().equals(&quot;Berserker&quot;)))</span>
+<span class="nc" id="L199">                    break;</span>
+
+<span class="nc" id="L201">                worldController.loadArmour();</span>
+<span class="nc" id="L202">                numProtectiveGearBought++;</span>
+<span class="nc" id="L203">                purchaseSuccessful = 1;</span>
+                
+<span class="nc" id="L205">                break;</span>
+            case &quot;HealthPotion&quot;:
+                // Assumed health potion will only increase health not be added to inv 
+<span class="nc bnc" id="L208" title="All 6 branches missed.">                if (!(character.getHealth() &lt; 100) || (numHealthPotionsBought == 1 &amp;&amp;  worldController.getGameMode().equals(&quot;Survival&quot;)))</span>
+<span class="nc" id="L209">                    break;</span>
+
+<span class="nc" id="L211">                character.refillHealth();</span>
+<span class="nc" id="L212">                numHealthPotionsBought++;</span>
+<span class="nc" id="L213">                purchaseSuccessful = 1;</span>
+                
+<span class="nc" id="L215">                break;</span>
+
+            default:
+                break;
+
+        }
+
+<span class="nc bnc" id="L222" title="All 2 branches missed.">        if (purchaseSuccessful == 1)</span>
+<span class="nc" id="L223">            character.reduceGoldItems(itemPrice.get());</span>
+
+<span class="nc" id="L225">    }</span>
+
+    @FXML
+    public void handleSell(ActionEvent event) {
+        
+        // TODO: IMPLEMENT SELLING OF ITEMS
+        
+        // switch (itemSelected.get()) {
+        //     case &quot;Sword&quot;:
+        //         break;
+        //     case &quot;Staff&quot;:
+        //         break;
+        //     case &quot;Stake&quot;:
+        //         break;
+        //     case &quot;Shield&quot;:
+
+        //         break;
+        //     case &quot;Helmet&quot;:
+
+        //         break;
+        //     case &quot;Armour&quot;:
+
+        //         break;
+        //     case &quot;HealthPotion&quot;:
+
+        //         break;
+        //     default:
+        //         break;
+        // }
+
+        // character.ReceiveGoldItems(itemPrice.get());
+
+<span class="nc" id="L257">    }</span>
+    
+    @FXML
+    public void setSwordPrice(ActionEvent event) {
+        // TODO: TOO MUCH REPEATED CODE
+<span class="nc" id="L262">        Factory factory = new Factory();</span>
+<span class="nc" id="L263">        itemSelected.set(&quot;Sword&quot;);</span>
+<span class="nc" id="L264">        itemPrice.set(factory.getItemPrice(itemSelected.get()));</span>
+<span class="nc" id="L265">    }</span>
+
+    @FXML
+    public void setStaffPrice(ActionEvent event) {
+<span class="nc" id="L269">        itemSelected.set(&quot;Staff&quot;);</span>
+<span class="nc" id="L270">        Factory factory = new Factory();</span>
+<span class="nc" id="L271">        itemPrice.set(factory.getItemPrice(itemSelected.get()));</span>
+<span class="nc" id="L272">    }</span>
+
+    @FXML
+    public void setStakePrice(ActionEvent event) {
+<span class="nc" id="L276">        itemSelected.set(&quot;Stake&quot;);</span>
+<span class="nc" id="L277">        Factory factory = new Factory();</span>
+<span class="nc" id="L278">        itemPrice.set(factory.getItemPrice(itemSelected.get()));</span>
+
+<span class="nc" id="L280">    }</span>
+
+    @FXML
+    public void setShieldPrice(ActionEvent event) {
+<span class="nc" id="L284">        itemSelected.set(&quot;Shield&quot;);</span>
+<span class="nc" id="L285">        Factory factory = new Factory();</span>
+<span class="nc" id="L286">        itemPrice.set(factory.getItemPrice(itemSelected.get()));</span>
+<span class="nc" id="L287">    }</span>
+
+    @FXML
+    public void setHelmetPrice(ActionEvent event) {
+<span class="nc" id="L291">        itemSelected.set(&quot;Helmet&quot;);</span>
+<span class="nc" id="L292">        Factory factory = new Factory();</span>
+<span class="nc" id="L293">        itemPrice.set(factory.getItemPrice(itemSelected.get()));</span>
+<span class="nc" id="L294">    }</span>
+
+    @FXML
+    public void setArmourPrice(ActionEvent event) {
+<span class="nc" id="L298">        itemSelected.set(&quot;Armour&quot;);</span>
+<span class="nc" id="L299">        Factory factory = new Factory();</span>
+<span class="nc" id="L300">        itemPrice.set(factory.getItemPrice(itemSelected.get()));</span>
+<span class="nc" id="L301">    }</span>
+
+    @FXML
+    public void setHealthPotionPrice(ActionEvent event) {
+<span class="nc" id="L305">        itemSelected.set(&quot;HealthPotion&quot;);</span>
+<span class="nc" id="L306">        Factory factory = new Factory();</span>
+<span class="nc" id="L307">        itemPrice.set(factory.getItemPrice(itemSelected.get()));</span>
+<span class="nc" id="L308">    }</span>
+    
+    @FXML
+    public void initialize() {
+        // TODO: Must be unidirectional NOT bi-directional
+<span class="nc" id="L313">        goldValue.textProperty().bindBidirectional(character.goldProperty(), new NumberStringConverter());</span>
+<span class="nc" id="L314">        healthValue.textProperty().bindBidirectional(character.healthProperty(), new NumberStringConverter());</span>
+<span class="nc" id="L315">        price.textProperty().bindBidirectional(itemPrice, new NumberStringConverter());</span>
+
+<span class="nc" id="L317">        swordImageOn.setImage(worldController.getItemImage(&quot;Sword&quot;));</span>
+<span class="nc" id="L318">        stakeImageOn.setImage(worldController.getItemImage(&quot;Stake&quot;));</span>
+<span class="nc" id="L319">        staffImageOn.setImage(worldController.getItemImage(&quot;Staff&quot;));</span>
+<span class="nc" id="L320">        shieldImageOn.setImage(worldController.getItemImage(&quot;Shield&quot;));</span>
+<span class="nc" id="L321">        helmetImageOn.setImage(worldController.getItemImage(&quot;Helmet&quot;));</span>
+<span class="nc" id="L322">        armourImageOn.setImage(worldController.getItemImage(&quot;Armour&quot;));</span>
+<span class="nc" id="L323">        healthPotionImageOn.setImage(worldController.getItemImage(&quot;HealthPotion&quot;));</span>
+<span class="nc" id="L324">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

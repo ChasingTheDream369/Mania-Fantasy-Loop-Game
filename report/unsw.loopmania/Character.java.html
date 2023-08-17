@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Character.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCo Coverage Report</a> &gt; <a href="index.source.html" class="el_package">unsw.loopmania</a> &gt; <span class="el_source">Character.java</span></div><h1>Character.java</h1><pre class="source lang-java linenums">package unsw.loopmania;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.property.DoubleProperty;
+
+
+/**
+ * represents the main character in the backend of the game world
+ */
+public class Character extends Players implements CharacterStrategy {
+
+    private static final double speed = 20;
+<span class="fc" id="L20">    private final double characterDamage = 5;</span>
+    private ArrayList&lt;BasicItems&gt; equippedItems;
+    private ArrayList&lt;DefenceStrategy&gt; defenciveItemsInUse;
+    private WeaponStrategy weaponItemsInUse; 
+    private double experience;
+    private int numOfCycles;
+    private SimpleIntegerProperty goldItems;
+<span class="fc" id="L27">    private String[] weapons = {&quot;Sword&quot;,&quot;Staff&quot;,&quot;Stake&quot;};</span>
+<span class="fc" id="L28">    private String[] defend = {&quot;Helmet&quot;,&quot;Shield&quot;,&quot;Armour&quot;};</span>
+
+
+    public Character(PathPosition position) {
+<span class="fc" id="L32">        super(position);</span>
+<span class="fc" id="L33">        setSpeed(speed);</span>
+<span class="fc" id="L34">        setDamage(characterDamage);</span>
+<span class="fc" id="L35">        setType(&quot;Character&quot;);</span>
+<span class="fc" id="L36">        setHealth(100);</span>
+<span class="fc" id="L37">        this.experience = 0;</span>
+<span class="fc" id="L38">        this.equippedItems = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L39">        this.defenciveItemsInUse = new ArrayList&lt;DefenceStrategy&gt;();</span>
+<span class="fc" id="L40">        this.weaponItemsInUse = null;</span>
+<span class="fc" id="L41">        this.goldItems = new SimpleIntegerProperty();</span>
+<span class="fc" id="L42">        this.goldItems.set(15);</span>
+<span class="fc" id="L43">        this.numOfCycles = 0;</span>
+<span class="fc" id="L44">    }</span>
+
+    public double getExperience() {
+<span class="fc" id="L47">        return this.experience;</span>
+    }
+
+    public void setNumOfCycles(int numOfCycles){
+<span class="nc" id="L51">        this.numOfCycles = numOfCycles;</span>
+<span class="nc" id="L52">    }</span>
+
+    public int getNumOfCycles(){
+<span class="nc" id="L55">        return numOfCycles;</span>
+    }
+
+    public void setExperience(int experience) {
+<span class="nc" id="L59">        this.experience += experience;</span>
+<span class="nc" id="L60">    }</span>
+
+    public void characterAttack(Enemy player) {
+        
+<span class="fc bfc" id="L64" title="All 2 branches covered.">        if (weaponItemsInUse != null) {</span>
+<span class="fc" id="L65">            double damage = weaponItemsInUse.damageToEnemy(player);</span>
+<span class="fc" id="L66">            setDamage(characterDamage+damage);</span>
+<span class="fc" id="L67">        }</span>
+        else{
+<span class="fc" id="L69">            setDamage(characterDamage);</span>
+        }
+
+<span class="fc bfc" id="L72" title="All 2 branches covered.">        if(checkHelmet()){</span>
+<span class="fc" id="L73">            setDamage(characterDamage-1);</span>
+        }
+
+<span class="fc" id="L76">        player.reduceHealth(this);</span>
+        
+<span class="fc" id="L78">    }</span>
+
+    private boolean checkHelmet(){
+
+<span class="fc bfc" id="L82" title="All 2 branches covered.">        for(DefenceStrategy d:defenciveItemsInUse){</span>
+<span class="pc bpc" id="L83" title="1 of 2 branches missed.">            if(d.getType().equals(&quot;Helmet&quot;)){</span>
+<span class="fc" id="L84">                return true;</span>
+            }
+<span class="nc" id="L86">        }</span>
+
+<span class="fc" id="L88">        return false;</span>
+
+    }
+
+    public void setEquippedItems(BasicItems item){
+<span class="nc" id="L93">        equippedItems.add(item);</span>
+<span class="nc bnc" id="L94" title="All 2 branches missed.">        if(Arrays.asList(weapons).contains(item.getType())){</span>
+<span class="nc" id="L95">            setWeaponItem((WeaponStrategy) item);</span>
+        }
+        else{
+<span class="nc" id="L98">            setDefenceItem((DefenceStrategy) item);</span>
+        }
+<span class="nc" id="L100">    }</span>
+    
+    public ArrayList&lt;BasicItems&gt; getEquippedItems() {
+<span class="nc" id="L103">        return equippedItems;</span>
+    }
+
+    public void removeEquippedItems(BasicItems item){
+<span class="nc" id="L107">        equippedItems.remove(item);</span>
+<span class="nc" id="L108">    }</span>
+
+    // WE MIGHT NOT USE THIS FUNCTION AS WE ARE OVERRIDING THE REDUCEHEALTH
+
+    public void characterDefence(Enemy enemy) {
+<span class="nc bnc" id="L113" title="All 2 branches missed.">        if (defenciveItemsInUse.size() &gt; 0) {</span>
+<span class="nc bnc" id="L114" title="All 2 branches missed.">            for(DefenceStrategy d:defenciveItemsInUse){</span>
+<span class="nc" id="L115">                double damage = d.defendAgainstAttack(enemy);</span>
+<span class="nc" id="L116">                enemy.setDamage(enemy.getDamage() - (enemy.getDamage()*damage));</span>
+<span class="nc" id="L117">            } </span>
+        }
+<span class="nc" id="L119">    }</span>
+
+    @Override
+    public void reduceHealth(Players players){
+<span class="fc bfc" id="L123" title="All 2 branches covered.">        if (defenciveItemsInUse.size() &gt; 0) {</span>
+<span class="fc bfc" id="L124" title="All 2 branches covered.">            for(DefenceStrategy d:defenciveItemsInUse){</span>
+<span class="fc" id="L125">                double Enemydamage = d.defendAgainstAttack((Enemy)players);</span>
+<span class="fc" id="L126">                double newHealth = getHealth() - (players.getDamage()-players.getDamage()*Enemydamage);</span>
+<span class="fc" id="L127">                setHealth(newHealth);</span>
+<span class="fc" id="L128">            } </span>
+        }
+        else {
+<span class="fc" id="L131">            double newHealth = getHealth() - players.getDamage();</span>
+<span class="fc" id="L132">            setHealth(newHealth);</span>
+        }
+<span class="fc" id="L134">    }</span>
+
+    public void setWeaponItem(WeaponStrategy itemToSet) {
+<span class="fc" id="L137">        this.weaponItemsInUse = itemToSet;</span>
+<span class="fc" id="L138">    }</span>
+    
+    public void setDefenceItem(DefenceStrategy itemToSet) {
+<span class="fc" id="L141">        this.defenciveItemsInUse.add(itemToSet);</span>
+<span class="fc" id="L142">    }</span>
+
+    public void removeDefenceItem(DefenceStrategy itemToSet) {
+<span class="fc" id="L145">        this.defenciveItemsInUse.remove(itemToSet);</span>
+<span class="fc" id="L146">    }</span>
+
+    public void refillHealth() {
+<span class="nc bnc" id="L149" title="All 2 branches missed.">        if (this.getHealth() &lt; 100) {</span>
+<span class="nc" id="L150">            this.setHealth(100);</span>
+        } else {
+<span class="nc" id="L152">            ReceiveGoldItems(15);</span>
+        }
+<span class="nc" id="L154">    }</span>
+
+    public int getGold(){
+<span class="fc" id="L157">        return goldItems.get();</span>
+    }
+
+    public void ReceiveGoldItems(int goldItemsAdd) {
+<span class="fc" id="L161">        this.goldItems.set(this.goldItems.get() + goldItemsAdd);</span>
+<span class="fc" id="L162">    }</span>
+
+    public void reduceGoldItems(int goldItemsMinus) {
+<span class="nc" id="L165">        this.goldItems.set(this.goldItems.get() - goldItemsMinus);</span>
+<span class="nc" id="L166">    }</span>
+
+    public IntegerProperty goldProperty() {
+<span class="nc" id="L169">        return goldItems;</span>
+    }
+
+    public DoubleProperty healthProperty() {
+<span class="nc" id="L173">        return getHealthProperty();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

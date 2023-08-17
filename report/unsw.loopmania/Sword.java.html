@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Sword.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCo Coverage Report</a> &gt; <a href="index.source.html" class="el_package">unsw.loopmania</a> &gt; <span class="el_source">Sword.java</span></div><h1>Sword.java</h1><pre class="source lang-java linenums">package unsw.loopmania;
+
+import javafx.beans.property.SimpleIntegerProperty;
+import java.io.File;
+import javafx.scene.image.Image;
+
+/**
+ * represents an equipped or unequipped sword in the backend world
+ */
+public class Sword extends BasicItems implements WeaponStrategy {
+    //TODO: add the types for items..!!
+<span class="fc" id="L12">    private final double damage = 3.0;</span>
+    private static final double swordPrice = 5.0;
+
+    public Sword(SimpleIntegerProperty x, SimpleIntegerProperty y) {
+<span class="fc" id="L16">        super(x, y, swordPrice);</span>
+<span class="fc" id="L17">        setDamage(&quot;Slug&quot;, damage);</span>
+<span class="fc" id="L18">        setDamage(&quot;Zombie&quot;, damage);</span>
+<span class="fc" id="L19">        setDamage(&quot;Vampire&quot;, damage);</span>
+<span class="fc" id="L20">        setType(&quot;Sword&quot;);</span>
+        //this.basicImages = new Image((new File(&quot;src/images/basic_sword.png&quot;)).toURI().toString());
+<span class="fc" id="L22">    }</span>
+    
+    @Override
+    public double damageToEnemy(Enemy enemy) {
+<span class="fc" id="L26">        return getDamage(enemy.getType());</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

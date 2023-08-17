@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Zombie.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCo Coverage Report</a> &gt; <a href="index.source.html" class="el_package">unsw.loopmania</a> &gt; <span class="el_source">Zombie.java</span></div><h1>Zombie.java</h1><pre class="source lang-java linenums">package unsw.loopmania;
+
+import java.io.File;
+import javafx.scene.image.Image;
+
+public class Zombie extends Enemy implements EnemyStrategy{
+    
+    private static final int speed = 3;
+    private static final int max_bite = 9;
+    private static final int min_bite = 2;
+
+    private GainsOnDefeat gains;
+    private int criticalBite;
+
+    public Zombie(PathPosition position){
+<span class="fc" id="L16">        super(position);</span>
+<span class="fc" id="L17">        setSpeed(speed);</span>
+<span class="fc" id="L18">        setType(&quot;Zombie&quot;);</span>
+<span class="fc" id="L19">        criticalBite = (int)Math.floor(Math.random()*(max_bite-min_bite+1)+min_bite);</span>
+<span class="fc" id="L20">        setHealth(17);</span>
+<span class="fc" id="L21">        setDamage(7);</span>
+<span class="fc" id="L22">        setBattleRadius(1.5);</span>
+<span class="fc" id="L23">        setSupportRadius(2);</span>
+<span class="fc" id="L24">        setExperience(7);</span>
+<span class="fc" id="L25">        int rand = (int)Math.floor(Math.random()*(5-0+0)+0);</span>
+<span class="fc" id="L26">        int rand1 = (int)Math.floor(Math.random()*(7-0+0)+0);</span>
+<span class="fc" id="L27">        this.gains = new GainsOnDefeat(7, 7, items[rand],cards[rand1]);</span>
+        //this.image = new Image((new File(&quot;src/images/zombie.png&quot;)).toURI().toString());
+<span class="fc" id="L29">    }</span>
+
+    public Zombie(PathPosition position,int cur){
+<span class="fc" id="L32">        super(position);</span>
+<span class="fc" id="L33">        setSpeed(speed);</span>
+<span class="fc" id="L34">        setType(&quot;Zombie&quot;);</span>
+<span class="fc" id="L35">        criticalBite = 1;</span>
+<span class="fc" id="L36">        setHealth(17);</span>
+<span class="fc" id="L37">        setDamage(7);</span>
+<span class="fc" id="L38">        setBattleRadius(1.5);</span>
+<span class="fc" id="L39">        setSupportRadius(2);</span>
+<span class="fc" id="L40">        setExperience(7);</span>
+<span class="fc" id="L41">        int rand = (int)Math.floor(Math.random()*(5-0+0)+0);</span>
+<span class="fc" id="L42">        int rand1 = (int)Math.floor(Math.random()*(6-0+0)+0);</span>
+<span class="fc" id="L43">        this.gains = new GainsOnDefeat(7, 7, items[rand],cards[rand1]);</span>
+        //this.image = new Image((new File(&quot;src/images/zombie.png&quot;)).toURI().toString());
+<span class="fc" id="L45">    }</span>
+
+    public void enemyAttack(Players player){
+<span class="fc" id="L48">        updateAttackNum();</span>
+<span class="fc" id="L49">        attackCrticalCheck(currentAttackNum, player);</span>
+<span class="fc" id="L50">        attack(player);</span>
+<span class="fc" id="L51">    }</span>
+
+    public GainsOnDefeat getGainsOnDefeat(){
+<span class="nc" id="L54">        return gains;</span>
+    }
+
+    private void attackCrticalCheck(int currentAttackNum, Players player){
+        
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        if(currentAttackNum == criticalBite) {</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">            if (player.getType().equals(&quot;AlliedSoldier&quot;)) {</span>
+<span class="fc" id="L61">                AlliedSoldier allySoldier = (AlliedSoldier) player;</span>
+<span class="fc" id="L62">                allySoldier.setAlive(false);</span>
+<span class="fc" id="L63">                allySoldier.setIsZombie(true);</span>
+            }
+        }
+
+<span class="fc" id="L67">    }</span>
+
+    @Override
+    public void move(){
+        // TODO = modify this, since this implementation doesn't provide the expected enemy behaviour
+        // this basic enemy moves in a random direction... 25% chance up or down, 50% chance not at all...
+        
+<span class="nc" id="L74">        moveUpPath();</span>
+        
+<span class="nc" id="L76">    }</span>
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

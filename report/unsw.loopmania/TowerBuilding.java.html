@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TowerBuilding.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCo Coverage Report</a> &gt; <a href="index.source.html" class="el_package">unsw.loopmania</a> &gt; <span class="el_source">TowerBuilding.java</span></div><h1>TowerBuilding.java</h1><pre class="source lang-java linenums">package unsw.loopmania;
+import javafx.scene.image.Image;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import javafx.beans.property.SimpleIntegerProperty;
+
+public class TowerBuilding extends Buildings {
+
+<span class="fc" id="L11">    private double battleRadius = 3.0;</span>
+<span class="fc" id="L12">    private double damage = 2.0;</span>
+
+    public TowerBuilding(SimpleIntegerProperty x, SimpleIntegerProperty y) {
+<span class="fc" id="L15">        super(&quot;Tower&quot;, x, y);</span>
+        //this.buildingImage = new Image((new File(&quot;src/images/tower.png&quot;)).toURI().toString());
+<span class="fc" id="L17">    }</span>
+
+    public void attackEnemy(Enemy enemy) {
+        // If an enemy in its battle radius attack
+<span class="fc bfc" id="L21" title="All 2 branches covered.">        if (Math.pow((enemy.getX() - this.getX()), 2) +  Math.pow((enemy.getY() - this.getY()), 2) &lt; Math.pow(battleRadius, 2)){</span>
+<span class="fc" id="L22">            enemy.setHealth(enemy.getHealth() - damage);</span>
+        }
+        
+<span class="fc" id="L25">    }</span>
+
+    public ArrayList&lt;Enemy&gt; performAction(List&lt;Enemy&gt; enemies, ArrayList&lt;Enemy&gt; killedEnemies) {
+<span class="fc bfc" id="L28" title="All 2 branches covered.">        for (Enemy enemy:enemies) {</span>
+<span class="fc" id="L29">            attackEnemy(enemy);</span>
+<span class="fc bfc" id="L30" title="All 2 branches covered.">            if (enemy.getHealth() &lt;= 0) {</span>
+<span class="fc" id="L31">                killedEnemies.add(enemy);</span>
+            }
+<span class="fc" id="L33">        }</span>
+
+<span class="fc" id="L35">        return killedEnemies;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

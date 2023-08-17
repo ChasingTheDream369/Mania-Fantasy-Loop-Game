@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LoopManiaWorldLoader.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCo Coverage Report</a> &gt; <a href="index.source.html" class="el_package">unsw.loopmania</a> &gt; <span class="el_source">LoopManiaWorldLoader.java</span></div><h1>LoopManiaWorldLoader.java</h1><pre class="source lang-java linenums">package unsw.loopmania;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.ArrayList;
+
+import org.javatuples.Pair;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+import javafx.beans.property.SimpleIntegerProperty;
+import java.util.List;
+
+/**
+ * Loads a world from a .json file.
+ * 
+ * By extending this class, a subclass can hook into entity creation.
+ * This is useful for creating UI elements with corresponding entities.
+ * 
+ * this class is used to load the world.
+ * it loads non-spawning entities from the configuration files.
+ * spawning of enemies/cards must be handled by the controller.
+ */
+<span class="nc bnc" id="L25" title="All 2 branches missed.">public abstract class LoopManiaWorldLoader {</span>
+    private JSONObject json;
+
+<span class="nc" id="L28">    public LoopManiaWorldLoader(String filename) throws FileNotFoundException {</span>
+<span class="nc" id="L29">        json = new JSONObject(new JSONTokener(new FileReader(&quot;worlds/&quot; + filename)));</span>
+<span class="nc" id="L30">    }</span>
+
+    private boolean isSubgoal(String subgoal) {
+
+<span class="nc bnc" id="L34" title="All 4 branches missed.">        return (subgoal.equals(&quot;OR&quot;) || subgoal.equals(&quot;AND&quot;));</span>
+
+    }
+
+    private void overallGoalsGame(Subgoals rootSubgoal, JSONArray subgoalsNeeded) {
+
+<span class="nc" id="L40">        JSONObject firstGoalObject = subgoalsNeeded.getJSONObject(0);</span>
+<span class="nc" id="L41">        JSONObject secondGoalObject = subgoalsNeeded.getJSONObject(1);</span>
+
+<span class="nc" id="L43">        String firstGoalString = firstGoalObject.getString(&quot;goal&quot;);</span>
+<span class="nc" id="L44">        String secondGoalString = secondGoalObject.getString(&quot;goal&quot;);</span>
+
+<span class="nc" id="L46">        boolean firstIsSubGoal = isSubgoal(firstGoalString);</span>
+<span class="nc" id="L47">        boolean secondIsSubGoal= isSubgoal(secondGoalString);</span>
+
+<span class="nc bnc" id="L49" title="All 4 branches missed.">        if (firstIsSubGoal &amp;&amp; secondIsSubGoal) {</span>
+            
+<span class="nc" id="L51">            Subgoals firstSubgoal = new Subgoals(firstGoalString);</span>
+<span class="nc" id="L52">            JSONArray firstSubgoalsReq = firstGoalObject.getJSONArray(&quot;subgoals&quot;);</span>
+
+<span class="nc" id="L54">            Subgoals secondSubgoal = new Subgoals(secondGoalString);</span>
+<span class="nc" id="L55">            JSONArray secondSubgoalsReq = secondGoalObject.getJSONArray(&quot;subgoals&quot;);</span>
+
+<span class="nc" id="L57">            rootSubgoal.addGoal(firstSubgoal);</span>
+<span class="nc" id="L58">            rootSubgoal.addGoal(secondSubgoal);</span>
+
+<span class="nc" id="L60">            overallGoalsGame(firstSubgoal, firstSubgoalsReq);</span>
+<span class="nc" id="L61">            overallGoalsGame(secondSubgoal, secondSubgoalsReq);</span>
+<span class="nc" id="L62">        }</span>
+
+<span class="nc bnc" id="L64" title="All 8 branches missed.">        else if ((firstIsSubGoal &amp;&amp; !secondIsSubGoal) || (!firstIsSubGoal &amp;&amp; secondIsSubGoal)) {</span>
+            
+<span class="nc bnc" id="L66" title="All 2 branches missed.">            String newSubString = (firstIsSubGoal == true) ? firstGoalString : secondGoalString;</span>
+
+<span class="nc" id="L68">            Subgoals firstSubgoal = new Subgoals(newSubString);</span>
+<span class="nc bnc" id="L69" title="All 2 branches missed.">            JSONObject subgoalObject = (firstIsSubGoal == true) ? firstGoalObject : secondGoalObject;</span>
+
+<span class="nc" id="L71">            JSONArray firstSubgoalsReq = subgoalObject.getJSONArray(&quot;subgoals&quot;);</span>
+
+<span class="nc bnc" id="L73" title="All 2 branches missed.">            String newGoalsubstring = (firstIsSubGoal == false) ? firstGoalString : secondGoalString;</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">            JSONObject correctObject = (firstIsSubGoal == false) ? firstGoalObject : secondGoalObject;</span>
+            
+<span class="nc" id="L76">            Goal goalCondition = new Goal(newGoalsubstring, correctObject.getInt(&quot;quantity&quot;));</span>
+
+<span class="nc" id="L78">            rootSubgoal.addGoal(firstSubgoal);</span>
+<span class="nc" id="L79">            rootSubgoal.addGoal(goalCondition);</span>
+
+<span class="nc" id="L81">            overallGoalsGame(firstSubgoal, firstSubgoalsReq);</span>
+
+<span class="nc" id="L83">        }</span>
+
+        else {
+            
+<span class="nc" id="L87">            Goal firstGoal = new Goal(firstGoalString, firstGoalObject.getInt(&quot;quantity&quot;));</span>
+<span class="nc" id="L88">            Goal secondGoal = new Goal(secondGoalString, secondGoalObject.getInt(&quot;quantity&quot;));</span>
+            
+<span class="nc" id="L90">            rootSubgoal.addGoal(firstGoal);</span>
+<span class="nc" id="L91">            rootSubgoal.addGoal(secondGoal);</span>
+
+        }
+
+
+
+<span class="nc" id="L97">    }</span>
+    
+    private GoalCondtions getGoalCondtions(JSONObject goalCondtions) {
+
+<span class="nc" id="L101">        String goalQuantifier = goalCondtions.getString(&quot;goal&quot;);</span>
+        GoalCondtions characterGoals;
+
+<span class="nc bnc" id="L104" title="All 2 branches missed.">        if (goalQuantifier.equalsIgnoreCase(&quot;AND&quot;) || </span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">            goalQuantifier.equalsIgnoreCase(&quot;OR&quot;)) {</span>
+            
+<span class="nc" id="L107">            Subgoals rootSubgoal = new Subgoals(goalQuantifier);</span>
+<span class="nc" id="L108">            JSONArray subgoalsNeeded = goalCondtions.getJSONArray(&quot;subgoals&quot;);</span>
+<span class="nc" id="L109">            overallGoalsGame(rootSubgoal, subgoalsNeeded);</span>
+<span class="nc" id="L110">            characterGoals = rootSubgoal;</span>
+<span class="nc" id="L111">        }</span>
+
+        else {
+<span class="nc" id="L114">            Goal goalCondition = new Goal(goalQuantifier, goalCondtions.getInt(&quot;quantity&quot;));</span>
+<span class="nc" id="L115">            characterGoals = goalCondition;</span>
+        }
+
+<span class="nc" id="L118">        return characterGoals;</span>
+
+    }
+
+    /**
+     * Parses the JSON to create a world.
+     */
+    public LoopManiaWorld load() {
+<span class="nc" id="L126">        int width = json.getInt(&quot;width&quot;);</span>
+<span class="nc" id="L127">        int height = json.getInt(&quot;height&quot;);</span>
+
+        // path variable is collection of coordinates with directions of path taken...
+<span class="nc" id="L130">        List&lt;Pair&lt;Integer, Integer&gt;&gt; orderedPath = loadPathTiles(json.getJSONObject(&quot;path&quot;), width, height);</span>
+<span class="nc" id="L131">        JSONObject goalCondtions = json.getJSONObject(&quot;goal-condition&quot;);  </span>
+<span class="nc" id="L132">        JSONArray rareItems = json.getJSONArray(&quot;rare_items&quot;); </span>
+        
+<span class="nc" id="L134">        GoalCondtions characterGoals = getGoalCondtions(goalCondtions);</span>
+
+<span class="nc" id="L136">        LoopManiaWorld world = new LoopManiaWorld(width, height, orderedPath, characterGoals, rareItems);</span>
+
+<span class="nc" id="L138">        JSONArray jsonEntities = json.getJSONArray(&quot;entities&quot;);</span>
+
+        // load non-path entities later so that they're shown on-top
+<span class="nc bnc" id="L141" title="All 2 branches missed.">        for (int i = 0; i &lt; jsonEntities.length(); i++) {</span>
+<span class="nc" id="L142">            loadEntity(world, jsonEntities.getJSONObject(i), orderedPath);</span>
+        }
+
+<span class="nc" id="L145">        return world;</span>
+    }
+
+    /**
+     * load an entity into the world
+     * @param world backend world object
+     * @param json a JSON object to parse (different from the )
+     * @param orderedPath list of pairs of x, y cell coordinates representing game path
+     */
+    private void loadEntity(LoopManiaWorld world, JSONObject currentJson, List&lt;Pair&lt;Integer, Integer&gt;&gt; orderedPath) {
+<span class="nc" id="L155">        String type = currentJson.getString(&quot;type&quot;);</span>
+<span class="nc" id="L156">        int x = currentJson.getInt(&quot;x&quot;);</span>
+<span class="nc" id="L157">        int y = currentJson.getInt(&quot;y&quot;);</span>
+<span class="nc" id="L158">        int indexInPath = orderedPath.indexOf(new Pair&lt;Integer, Integer&gt;(x, y));</span>
+<span class="nc bnc" id="L159" title="All 4 branches missed.">        assert indexInPath != -1;</span>
+
+<span class="nc" id="L161">        Entity entity = null;</span>
+        // TODO = load more entity types from the file
+<span class="nc bnc" id="L163" title="All 3 branches missed.">        switch (type) {</span>
+        case &quot;hero_castle&quot;:
+<span class="nc" id="L165">            Character character = new Character(new PathPosition(indexInPath, orderedPath));</span>
+<span class="nc" id="L166">            world.setCharacter(character);</span>
+<span class="nc" id="L167">            onLoad(character);</span>
+<span class="nc" id="L168">            entity = character;</span>
+<span class="nc" id="L169">            break;</span>
+        case &quot;path_tile&quot;:
+<span class="nc" id="L171">            throw new RuntimeException(&quot;path_tile's aren't valid entities, define the path externally.&quot;);</span>
+        // TODO Handle other possible entities
+        }
+<span class="nc" id="L174">        world.addEntity(entity);</span>
+<span class="nc" id="L175">    }</span>
+
+    /**
+     * load path tiles
+     * @param path json data loaded from file containing path information
+     * @param width width in number of cells
+     * @param height height in number of cells
+     * @return list of x, y cell coordinate pairs representing game path
+     */
+    private List&lt;Pair&lt;Integer, Integer&gt;&gt; loadPathTiles(JSONObject path, int width, int height) {
+<span class="nc bnc" id="L185" title="All 2 branches missed.">        if (!path.getString(&quot;type&quot;).equals(&quot;path_tile&quot;)) {</span>
+            // ... possible extension
+<span class="nc" id="L187">            throw new RuntimeException(</span>
+                    &quot;Path object requires path_tile type.  No other path types supported at this moment.&quot;);
+        }
+<span class="nc" id="L190">        PathTile starting = new PathTile(new SimpleIntegerProperty(path.getInt(&quot;x&quot;)), new SimpleIntegerProperty(path.getInt(&quot;y&quot;)));</span>
+<span class="nc bnc" id="L191" title="All 8 branches missed.">        if (starting.getY() &gt;= height || starting.getY() &lt; 0 || starting.getX() &gt;= width || starting.getX() &lt; 0) {</span>
+<span class="nc" id="L192">            throw new IllegalArgumentException(&quot;Starting point of path is out of bounds&quot;);</span>
+        }
+        // load connected path tiles
+<span class="nc" id="L195">        List&lt;PathTile.Direction&gt; connections = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L196" title="All 2 branches missed.">        for (Object dir: path.getJSONArray(&quot;path&quot;).toList()){</span>
+<span class="nc" id="L197">            connections.add(Enum.valueOf(PathTile.Direction.class, dir.toString()));</span>
+<span class="nc" id="L198">        }</span>
+
+<span class="nc bnc" id="L200" title="All 2 branches missed.">        if (connections.size() == 0) {</span>
+<span class="nc" id="L201">            throw new IllegalArgumentException(</span>
+                &quot;This path just consists of a single tile, it needs to consist of multiple to form a loop.&quot;);
+        }
+
+        // load the first position into the orderedPath
+<span class="nc" id="L206">        PathTile.Direction first = connections.get(0);</span>
+<span class="nc" id="L207">        List&lt;Pair&lt;Integer, Integer&gt;&gt; orderedPath = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L208">        orderedPath.add(Pair.with(starting.getX(), starting.getY()));</span>
+
+<span class="nc" id="L210">        int x = starting.getX() + first.getXOffset();</span>
+<span class="nc" id="L211">        int y = starting.getY() + first.getYOffset();</span>
+
+        // add all coordinates of the path into the orderedPath
+<span class="nc bnc" id="L214" title="All 2 branches missed.">        for (int i = 1; i &lt; connections.size(); i++) {</span>
+<span class="nc" id="L215">            orderedPath.add(Pair.with(x, y));</span>
+            
+<span class="nc bnc" id="L217" title="All 8 branches missed.">            if (y &gt;= height || y &lt; 0 || x &gt;= width || x &lt; 0) {</span>
+<span class="nc" id="L218">                throw new IllegalArgumentException(&quot;Path goes out of bounds at direction index &quot; + (i - 1) + &quot; (&quot; + connections.get(i - 1) + &quot;)&quot;);</span>
+            }
+            
+<span class="nc" id="L221">            PathTile.Direction dir = connections.get(i);</span>
+<span class="nc" id="L222">            PathTile tile = new PathTile(new SimpleIntegerProperty(x), new SimpleIntegerProperty(y));</span>
+<span class="nc" id="L223">            x += dir.getXOffset();</span>
+<span class="nc" id="L224">            y += dir.getYOffset();</span>
+<span class="nc bnc" id="L225" title="All 6 branches missed.">            if (orderedPath.contains(Pair.with(x, y)) &amp;&amp; !(x == starting.getX() &amp;&amp; y == starting.getY())) {</span>
+<span class="nc" id="L226">                throw new IllegalArgumentException(&quot;Path crosses itself at direction index &quot; + i + &quot; (&quot; + dir + &quot;)&quot;);</span>
+            }
+<span class="nc" id="L228">            onLoad(tile, connections.get(i - 1), dir);</span>
+        }
+        // we should connect back to the starting point
+<span class="nc bnc" id="L231" title="All 4 branches missed.">        if (x != starting.getX() || y != starting.getY()) {</span>
+<span class="nc" id="L232">            throw new IllegalArgumentException(String.format(</span>
+                    &quot;Path must loop back around on itself, this path doesn't finish where it began, it finishes at %d, %d.&quot;,
+<span class="nc" id="L234">                    x, y));</span>
+        }
+<span class="nc" id="L236">        onLoad(starting, connections.get(connections.size() - 1), connections.get(0));</span>
+<span class="nc" id="L237">        return orderedPath;</span>
+    }
+
+    public abstract void onLoad(Character character);
+    public abstract void onLoad(PathTile pathTile, PathTile.Direction into, PathTile.Direction out);
+
+    // TODO Create additional abstract methods for the other entities
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

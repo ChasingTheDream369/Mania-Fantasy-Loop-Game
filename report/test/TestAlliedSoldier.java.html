@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TestAlliedSoldier.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCo Coverage Report</a> &gt; <a href="index.source.html" class="el_package">test</a> &gt; <span class="el_source">TestAlliedSoldier.java</span></div><h1>TestAlliedSoldier.java</h1><pre class="source lang-java linenums">package test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.jupiter.api.Test;
+
+import javafx.beans.property.SimpleIntegerProperty;
+import unsw.loopmania.*;
+import org.javatuples.Pair;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+import unsw.loopmania.Character;
+
+<span class="fc" id="L23">public class TestAlliedSoldier {</span>
+    
+
+    private static final double CHARACTERHEALTH = 100;
+    private static final double CHARACTERDAMAGE = 5;
+    private static final double INTIALEXPERIANCE = 0;
+    private static final double ALLIEDSOLDIERHEALTH = 2;
+    private static final double ALLIEDSOLDIERSPEED = 20;
+    private static final double ALLIEDSOLDIERDAMAGE = 3;
+    private static final double SLUGHEALTH = 15;
+    private static final double VAMPIREHEALTH = 30;
+    private static final double ZOMBIEHEALTH = 17;
+    private static final double ZOMBIEDAMAGE = 7;
+    private static final double VAMPIREDAMAGE = 9.0;
+    private static final double SLUGDAMAGE = 5;
+
+    public List&lt;Pair&lt;Integer, Integer&gt;&gt; loadPathTiles(String[] path, int width, int height) {
+        
+<span class="fc" id="L41">        PathTile starting = new PathTile(new SimpleIntegerProperty(0), new SimpleIntegerProperty(0));</span>
+<span class="pc bpc" id="L42" title="4 of 8 branches missed.">        if (starting.getY() &gt;= height || starting.getY() &lt; 0 || starting.getX() &gt;= width || starting.getX() &lt; 0) {</span>
+<span class="nc" id="L43">            throw new IllegalArgumentException(&quot;Starting point of path is out of bounds&quot;);</span>
+        }
+        // load connected path tiles
+<span class="fc" id="L46">        List&lt;PathTile.Direction&gt; connections = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">        for (Object dir: path){</span>
+<span class="fc" id="L48">            connections.add(Enum.valueOf(PathTile.Direction.class, dir.toString()));</span>
+        }
+
+<span class="pc bpc" id="L51" title="1 of 2 branches missed.">        if (connections.size() == 0) {</span>
+<span class="nc" id="L52">            throw new IllegalArgumentException(</span>
+                &quot;This path just consists of a single tile, it needs to consist of multiple to form a loop.&quot;);
+        }
+
+        // load the first position into the orderedPath
+<span class="fc" id="L57">        PathTile.Direction first = connections.get(0);</span>
+<span class="fc" id="L58">        List&lt;Pair&lt;Integer, Integer&gt;&gt; orderedPath = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L59">        orderedPath.add(Pair.with(starting.getX(), starting.getY()));</span>
+
+<span class="fc" id="L61">        int x = starting.getX() + first.getXOffset();</span>
+<span class="fc" id="L62">        int y = starting.getY() + first.getYOffset();</span>
+
+        // add all coordinates of the path into the orderedPath
+<span class="fc bfc" id="L65" title="All 2 branches covered.">        for (int i = 1; i &lt; connections.size(); i++) {</span>
+<span class="fc" id="L66">            orderedPath.add(Pair.with(x, y));</span>
+            
+<span class="pc bpc" id="L68" title="4 of 8 branches missed.">            if (y &gt;= height || y &lt; 0 || x &gt;= width || x &lt; 0) {</span>
+<span class="nc" id="L69">                throw new IllegalArgumentException(&quot;Path goes out of bounds at direction index &quot; + (i - 1) + &quot; (&quot; + connections.get(i - 1) + &quot;)&quot;);</span>
+            }
+            
+<span class="fc" id="L72">            PathTile.Direction dir = connections.get(i);</span>
+<span class="fc" id="L73">            PathTile tile = new PathTile(new SimpleIntegerProperty(x), new SimpleIntegerProperty(y));</span>
+<span class="fc" id="L74">            x += dir.getXOffset();</span>
+<span class="fc" id="L75">            y += dir.getYOffset();</span>
+<span class="pc bpc" id="L76" title="2 of 6 branches missed.">            if (orderedPath.contains(Pair.with(x, y)) &amp;&amp; !(x == starting.getX() &amp;&amp; y == starting.getY())) {</span>
+<span class="nc" id="L77">                throw new IllegalArgumentException(&quot;Path crosses itself at direction index &quot; + i + &quot; (&quot; + dir + &quot;)&quot;);</span>
+            }
+        }
+        // we should connect back to the starting point
+<span class="pc bpc" id="L81" title="2 of 4 branches missed.">        if (x != starting.getX() || y != starting.getY()) {</span>
+<span class="nc" id="L82">            throw new IllegalArgumentException(String.format(</span>
+                    &quot;Path must loop back around on itself, this path doesn't finish where it began, it finishes at %d, %d.&quot;,
+<span class="nc" id="L84">                    x, y));</span>
+        }
+<span class="fc" id="L86">        return orderedPath;</span>
+    }
+
+    @Test
+    public void testBasicFunctionality() throws FileNotFoundException{
+        
+        
+<span class="fc" id="L93">        String[] Path = {&quot;RIGHT&quot;, &quot;RIGHT&quot;, &quot;DOWN&quot;, &quot;DOWN&quot;, &quot;LEFT&quot;, &quot;LEFT&quot;, &quot;UP&quot;, &quot;UP&quot;};</span>
+<span class="fc" id="L94">        JSONArray rareItems = new JSONArray();</span>
+<span class="fc" id="L95">        rareItems.put(&quot;TheOneRing&quot;);</span>
+        
+<span class="fc" id="L97">        Subgoals characterGoals= new Subgoals(&quot;AND&quot;);</span>
+<span class="fc" id="L98">        Goal firstGoal = new Goal(&quot;cycles&quot;, 100);</span>
+<span class="fc" id="L99">        characterGoals.addGoal(firstGoal);</span>
+
+<span class="fc" id="L101">        Subgoals childGoal = new Subgoals(&quot;OR&quot;);</span>
+<span class="fc" id="L102">        characterGoals.addGoal(childGoal);</span>
+
+<span class="fc" id="L104">        Goal secondGoal = new Goal(&quot;experience&quot;, 123456);</span>
+<span class="fc" id="L105">        Goal thirdGoal = new Goal(&quot;gold&quot;, 90000);</span>
+<span class="fc" id="L106">        childGoal.addGoal(secondGoal);</span>
+<span class="fc" id="L107">        childGoal.addGoal(thirdGoal);</span>
+        
+<span class="fc" id="L109">        List&lt;Pair&lt;Integer, Integer&gt;&gt; orderedPath = loadPathTiles(Path, 8, 14);</span>
+<span class="fc" id="L110">        LoopManiaWorld world = new LoopManiaWorld(8, 14, orderedPath, characterGoals, rareItems);</span>
+        
+<span class="fc" id="L112">        Pair&lt;Integer, Integer&gt; pair1 = new Pair&lt;Integer, Integer&gt;(0,0); </span>
+<span class="fc" id="L113">        Pair&lt;Integer, Integer&gt; pair2 = new Pair&lt;Integer, Integer&gt;(0,1);</span>
+<span class="fc" id="L114">        Pair&lt;Integer, Integer&gt; pair3 = new Pair&lt;Integer, Integer&gt;(1,1);</span>
+<span class="fc" id="L115">        Pair&lt;Integer, Integer&gt; pair4 = new Pair&lt;Integer, Integer&gt;(2,1);</span>
+<span class="fc" id="L116">        Pair&lt;Integer, Integer&gt; pair5 = new Pair&lt;Integer, Integer&gt;(2,2);</span>
+
+<span class="fc" id="L118">        List&lt;Pair&lt;Integer, Integer&gt;&gt; newOrderedPath = new ArrayList&lt;Pair&lt;Integer, Integer&gt;&gt;();</span>
+
+<span class="fc" id="L120">        newOrderedPath.add(pair1);</span>
+<span class="fc" id="L121">        newOrderedPath.add(pair2);</span>
+<span class="fc" id="L122">        newOrderedPath.add(pair3);</span>
+<span class="fc" id="L123">        newOrderedPath.add(pair4);</span>
+<span class="fc" id="L124">        newOrderedPath.add(pair5);</span>
+
+<span class="fc" id="L126">        PathPosition pos1 = new PathPosition(0, newOrderedPath);</span>
+<span class="fc" id="L127">        PathPosition pos2 = new PathPosition(1, newOrderedPath);</span>
+<span class="fc" id="L128">        PathPosition pos3 = new PathPosition(2, newOrderedPath);</span>
+<span class="fc" id="L129">        PathPosition pos4 = new PathPosition(3, newOrderedPath);</span>
+<span class="fc" id="L130">        PathPosition pos5 = new PathPosition(4, newOrderedPath);</span>
+
+<span class="fc" id="L132">        AlliedSoldier alliedSoldier = new AlliedSoldier(pos1);</span>
+<span class="fc" id="L133">        AlliedSoldier alliedSoldier2 = new AlliedSoldier(pos2);</span>
+
+<span class="fc" id="L135">        world.addAlliedSoldier(alliedSoldier);</span>
+<span class="fc" id="L136">        world.addAlliedSoldier(alliedSoldier2);</span>
+
+<span class="fc" id="L138">        List&lt;AlliedSoldier&gt; soldiers = world.getAlliedSoldiers(); </span>
+<span class="fc" id="L139">        assertEquals(2, soldiers.size());</span>
+
+<span class="fc" id="L141">        assertEquals(ALLIEDSOLDIERHEALTH, alliedSoldier.getHealth());</span>
+<span class="fc" id="L142">        assertEquals(ALLIEDSOLDIERDAMAGE, alliedSoldier.getDamage());</span>
+<span class="fc" id="L143">        assertEquals(ALLIEDSOLDIERSPEED, alliedSoldier.getSpeed());</span>
+
+<span class="fc" id="L145">        Vampire vampire = new Vampire(pos5);</span>
+<span class="fc" id="L146">        Zombie zombie = new Zombie(pos2);</span>
+<span class="fc" id="L147">        Slug slug = new Slug(pos3);</span>
+
+<span class="fc" id="L149">        alliedSoldier.attack(vampire);</span>
+
+<span class="fc" id="L151">        assertEquals(VAMPIREHEALTH-3, vampire.getHealth());</span>
+
+<span class="fc" id="L153">        alliedSoldier.attack(zombie);</span>
+
+<span class="fc" id="L155">        assertEquals(ZOMBIEHEALTH-3, zombie.getHealth());</span>
+
+<span class="fc" id="L157">        alliedSoldier.attack(slug);</span>
+
+<span class="fc" id="L159">        assertEquals(SLUGHEALTH-3, slug.getHealth());</span>
+
+<span class="fc" id="L161">        vampire.attack(alliedSoldier);</span>
+
+        final double newAlliedSoldierHealth = ALLIEDSOLDIERHEALTH-VAMPIREDAMAGE;
+
+<span class="fc" id="L165">        assertEquals(newAlliedSoldierHealth, alliedSoldier.getHealth());</span>
+
+<span class="fc" id="L167">        assertEquals(2, world.getAlliedSoldiers().size());</span>
+
+<span class="fc" id="L169">        assertEquals(14, zombie.getHealth());</span>
+
+        final double newAlliedSoldierHealth2 = newAlliedSoldierHealth-ZOMBIEDAMAGE;
+
+        //assertEquals(newAlliedSoldierHealth2, alliedSoldier.getHealth());
+
+        //assertEquals(1, world.getAlliedSoldiers().size());
+<span class="fc" id="L176">        slug.attack(alliedSoldier);</span>
+
+        final double newAlliedSoldierHealth3 = newAlliedSoldierHealth2-SLUGDAMAGE;
+
+        //assertEquals(newAlliedSoldierHealth3, alliedSoldier.getHealth());
+
+<span class="fc" id="L182">    }</span>
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

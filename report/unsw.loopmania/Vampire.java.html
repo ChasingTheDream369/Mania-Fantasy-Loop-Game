@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Vampire.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCo Coverage Report</a> &gt; <a href="index.source.html" class="el_package">unsw.loopmania</a> &gt; <span class="el_source">Vampire.java</span></div><h1>Vampire.java</h1><pre class="source lang-java linenums">package unsw.loopmania;
+
+import java.io.File;
+import javafx.scene.image.Image;
+
+public class Vampire extends Enemy implements EnemyStrategy{
+    
+<span class="fc" id="L8">    private int criticalBite = -1;</span>
+    private int criticalEndAttack;
+    private static final int initialDamage = 5;
+    private static final int speed = 8;
+    private GainsOnDefeat gains;
+<span class="fc" id="L13">    private boolean reverseDirection = false;</span>
+<span class="fc" id="L14">    private boolean reversed = false;</span>
+
+    public Vampire(PathPosition position){
+<span class="fc" id="L17">        super(position);</span>
+<span class="fc" id="L18">        this.criticalEndAttack = -1;</span>
+<span class="fc" id="L19">        setSpeed(speed);</span>
+<span class="fc" id="L20">        setType(&quot;Vampire&quot;);</span>
+<span class="fc" id="L21">        setHealth(30);</span>
+<span class="fc" id="L22">        setDamage(9);</span>
+<span class="fc" id="L23">        setBattleRadius(1.7);</span>
+<span class="fc" id="L24">        setSupportRadius(3);</span>
+<span class="fc" id="L25">        setExperience(9);</span>
+<span class="fc" id="L26">        int rand = (int)Math.floor(Math.random()*(5-0+0)+0);</span>
+<span class="fc" id="L27">        int rand1 = (int)Math.floor(Math.random()*(6-0+0)+0);</span>
+<span class="fc" id="L28">        this.gains = new GainsOnDefeat(9, 7, items[rand], cards[rand1]);</span>
+        //this.image = new Image((new File(&quot;src/images/vampire.png&quot;)).toURI().toString());
+<span class="fc" id="L30">    }</span>
+
+    public void enemyAttack(Players player){
+<span class="fc" id="L33">        updateAttackNum();</span>
+<span class="fc" id="L34">        attackCrticalCheck(currentAttackNum);</span>
+<span class="fc" id="L35">        attack(player);</span>
+<span class="fc" id="L36">    }</span>
+
+    public GainsOnDefeat getGainsOnDefeat(){
+<span class="nc" id="L39">        return gains;</span>
+    }
+
+    private void attackCrticalCheck(int currentAttackNum){
+        
+<span class="pc bpc" id="L44" title="1 of 2 branches missed.">        if(currentAttackNum == criticalBite){</span>
+<span class="nc" id="L45">            int max = currentAttackNum + 9;</span>
+<span class="nc" id="L46">            criticalEndAttack = (int)Math.floor(Math.random()*(max-currentAttackNum+1)+currentAttackNum);</span>
+        }
+        
+<span class="pc bpc" id="L49" title="2 of 4 branches missed.">        if(currentAttackNum &gt;= criticalBite &amp;&amp; currentAttackNum &lt;= criticalEndAttack){</span>
+<span class="nc" id="L50">            updateDamage();</span>
+        }
+
+        // TODO problem it will change everytime when it's not critical bite
+
+        // else {
+        //     setDamage(initialDamage);
+        // }
+
+<span class="fc" id="L59">    }</span>
+
+    public void updateDamage(){
+<span class="nc" id="L62">        double newDamage = initialDamage + (int)Math.floor(Math.random()*(9-3+1)+3);</span>
+<span class="nc" id="L63">        setDamage(newDamage);</span>
+<span class="nc" id="L64">    }</span>
+
+    public void updateCrticalBite(double criticalAdd) {
+<span class="fc" id="L67">        this.criticalBite = (int) Math.ceil(this.criticalBite + criticalAdd*this.criticalBite);</span>
+<span class="fc" id="L68">    }</span>
+
+    public void setBattleCritialBite() {
+<span class="nc" id="L71">        this.criticalBite =  (int) Math.floor(Math.random()*(9-3+1)+3);</span>
+
+<span class="nc" id="L73">    }</span>
+
+    public void reverse() {
+<span class="nc bnc" id="L76" title="All 2 branches missed.">        if (reverseDirection == false) {</span>
+<span class="nc" id="L77">            reverseDirection = true;</span>
+        } else {
+<span class="nc" id="L79">            reverseDirection = false;</span>
+        }
+<span class="nc" id="L81">    }</span>
+
+    public void changeDirection(CampfireBuilding cb) {
+<span class="nc bnc" id="L84" title="All 2 branches missed.">        if (Math.pow((this.getX() - cb.getX()), 2) +  Math.pow((this.getY() - cb.getY()), 2) &lt; Math.pow(cb.getSupportRadius(), 2)) {</span>
+<span class="nc bnc" id="L85" title="All 2 branches missed.">            if (!reversed) {</span>
+<span class="nc" id="L86">                reverse();</span>
+<span class="nc" id="L87">                reversed = true;</span>
+            }
+<span class="nc bnc" id="L89" title="All 2 branches missed.">        } else if (reversed == true) {</span>
+<span class="nc" id="L90">            reversed = false;</span>
+        }
+<span class="nc" id="L92">    }</span>
+
+    public boolean getReversed() {
+<span class="fc" id="L95">        return reversed;</span>
+    }
+
+    public boolean getReverseDirection() {
+<span class="fc" id="L99">        return reverseDirection;</span>
+    }
+
+    @Override
+    public void move(){
+<span class="pc bpc" id="L104" title="1 of 2 branches missed.">        if (reverseDirection == false) {</span>
+<span class="fc" id="L105">            moveUpPath();</span>
+        } else {
+<span class="nc" id="L107">            moveDownPath();</span>
+        }
+        
+<span class="fc" id="L110">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

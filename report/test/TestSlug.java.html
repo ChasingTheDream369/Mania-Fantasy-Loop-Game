@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TestSlug.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCo Coverage Report</a> &gt; <a href="index.source.html" class="el_package">test</a> &gt; <span class="el_source">TestSlug.java</span></div><h1>TestSlug.java</h1><pre class="source lang-java linenums">package test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.jupiter.api.Test;
+
+import javafx.beans.property.SimpleIntegerProperty;
+import unsw.loopmania.*;
+import org.javatuples.Pair;
+
+import unsw.loopmania.Character;
+
+<span class="fc" id="L19">public class TestSlug {</span>
+    
+
+    private static final double CHARACTERHEALTH = 100;
+    private static final double CHARACTERDAMAGE = 5;
+    private static final double INTIALEXPERIANCE = 0;
+    private static final double SLUGHEALTH = 15;
+    private static final double SLUGBAT = 1.2;
+    private static final double VAMPIREHEALTH = 30;
+    private static final double ZOMBIEHEALTH = 17;
+    private static final double ZOMBIEDAMAGE = 7;
+    private static final double VAMPIREDAMAGE = 9.0;
+    private static final double SLUGDAMAGE = 5;
+
+    @Test
+    public void testBasicAttack() {
+<span class="fc" id="L35">        TestingWorld tw= new TestingWorld();</span>
+<span class="fc" id="L36">        LoopManiaWorld world =  tw.world();</span>
+
+<span class="fc" id="L38">        List&lt;Pair&lt;Integer, Integer&gt;&gt; orderedPath = world.getOrderedPath();</span>
+<span class="fc" id="L39">        PathPosition pathPosition = new PathPosition(1, orderedPath);</span>
+<span class="fc" id="L40">        PathPosition pathPosition1 = new PathPosition(2, orderedPath);</span>
+
+<span class="fc" id="L42">        Slug slug = new Slug(pathPosition);</span>
+
+<span class="fc" id="L44">        assertEquals(SLUGHEALTH, slug.getHealth());</span>
+        
+<span class="fc" id="L46">        assertEquals(SLUGDAMAGE, slug.getDamage());</span>
+
+<span class="fc" id="L48">        assertEquals(SLUGBAT, slug.getBattleRadius());</span>
+        
+<span class="fc" id="L50">        assertEquals(SLUGBAT, slug.getSupportRadius());</span>
+
+<span class="fc" id="L52">        world.addEnemy(slug);</span>
+
+<span class="fc" id="L54">        Character character = new Character(pathPosition1);</span>
+
+<span class="fc" id="L56">        world.setCharacter(character);</span>
+        
+<span class="fc" id="L58">        world.runBattles();</span>
+
+<span class="fc" id="L60">        assertFalse(slug.isAlive());</span>
+
+
+
+<span class="fc" id="L64">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

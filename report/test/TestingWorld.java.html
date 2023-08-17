@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TestingWorld.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCo Coverage Report</a> &gt; <a href="index.source.html" class="el_package">test</a> &gt; <span class="el_source">TestingWorld.java</span></div><h1>TestingWorld.java</h1><pre class="source lang-java linenums">package test;
+
+import java.util.ArrayList;
+import java.util.List;
+import org.javatuples.Pair;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import javafx.beans.property.SimpleIntegerProperty;
+import unsw.loopmania.*;
+
+<span class="fc" id="L12">public class TestingWorld {</span>
+
+    public LoopManiaWorld world() {
+<span class="fc" id="L15">        int width = 18;</span>
+<span class="fc" id="L16">        int height = 14;</span>
+<span class="fc" id="L17">        List&lt;Pair&lt;Integer, Integer&gt;&gt; orderedPath = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L18">        JSONObject path = createMap(0, 0);</span>
+<span class="fc" id="L19">        orderedPath = loadPathTiles(path, width, height);</span>
+        
+<span class="fc" id="L21">        Subgoals characterGoals= new Subgoals(&quot;AND&quot;);</span>
+<span class="fc" id="L22">        Goal firstGoal = new Goal(&quot;cycles&quot;, 100);</span>
+<span class="fc" id="L23">        characterGoals.addGoal(firstGoal);</span>
+
+<span class="fc" id="L25">        Subgoals childGoal = new Subgoals(&quot;OR&quot;);</span>
+<span class="fc" id="L26">        characterGoals.addGoal(childGoal);</span>
+
+<span class="fc" id="L28">        Goal secondGoal = new Goal(&quot;experience&quot;, 123456);</span>
+<span class="fc" id="L29">        Goal thirdGoal = new Goal(&quot;gold&quot;, 90000);</span>
+<span class="fc" id="L30">        childGoal.addGoal(secondGoal);</span>
+<span class="fc" id="L31">        childGoal.addGoal(thirdGoal);</span>
+
+<span class="fc" id="L33">        JSONArray rareItems = new JSONArray();</span>
+        // Create a path position where the character is at the first part of the path
+<span class="fc" id="L35">        LoopManiaWorld world = new LoopManiaWorld(width, height, orderedPath, firstGoal, rareItems);</span>
+<span class="fc" id="L36">        return world;</span>
+    }
+    
+    
+
+    private List&lt;Pair&lt;Integer, Integer&gt;&gt; loadPathTiles(JSONObject path, int width, int height) {
+<span class="pc bpc" id="L42" title="1 of 2 branches missed.">        if (!path.getString(&quot;type&quot;).equals(&quot;path_tile&quot;)) {</span>
+            // ... possible extension
+<span class="nc" id="L44">            throw new RuntimeException(</span>
+                    &quot;Path object requires path_tile type.  No other path types supported at this moment.&quot;);
+        }
+<span class="fc" id="L47">        PathTile starting = new PathTile(new SimpleIntegerProperty(path.getInt(&quot;x&quot;)), new SimpleIntegerProperty(path.getInt(&quot;y&quot;)));</span>
+<span class="pc bpc" id="L48" title="4 of 8 branches missed.">        if (starting.getY() &gt;= height || starting.getY() &lt; 0 || starting.getX() &gt;= width || starting.getX() &lt; 0) {</span>
+<span class="nc" id="L49">            throw new IllegalArgumentException(&quot;Starting point of path is out of bounds&quot;);</span>
+        }
+        // load connected path tiles
+<span class="fc" id="L52">        List&lt;PathTile.Direction&gt; connections = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L53" title="All 2 branches covered.">        for (Object dir: path.getJSONArray(&quot;path&quot;).toList()){</span>
+<span class="fc" id="L54">            connections.add(Enum.valueOf(PathTile.Direction.class, dir.toString()));</span>
+<span class="fc" id="L55">        }</span>
+
+<span class="pc bpc" id="L57" title="1 of 2 branches missed.">        if (connections.size() == 0) {</span>
+<span class="nc" id="L58">            throw new IllegalArgumentException(</span>
+                &quot;This path just consists of a single tile, it needs to consist of multiple to form a loop.&quot;);
+        }
+
+        // load the first position into the orderedPath
+<span class="fc" id="L63">        PathTile.Direction first = connections.get(0);</span>
+<span class="fc" id="L64">        List&lt;Pair&lt;Integer, Integer&gt;&gt; orderedPath = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L65">        orderedPath.add(Pair.with(starting.getX(), starting.getY()));</span>
+
+<span class="fc" id="L67">        int x = starting.getX() + first.getXOffset();</span>
+<span class="fc" id="L68">        int y = starting.getY() + first.getYOffset();</span>
+
+        // add all coordinates of the path into the orderedPath
+<span class="fc bfc" id="L71" title="All 2 branches covered.">        for (int i = 1; i &lt; connections.size(); i++) {</span>
+<span class="fc" id="L72">            orderedPath.add(Pair.with(x, y));</span>
+            
+<span class="pc bpc" id="L74" title="4 of 8 branches missed.">            if (y &gt;= height || y &lt; 0 || x &gt;= width || x &lt; 0) {</span>
+<span class="nc" id="L75">                throw new IllegalArgumentException(&quot;Path goes out of bounds at direction index &quot; + (i - 1) + &quot; (&quot; + connections.get(i - 1) + &quot;)&quot;);</span>
+            }
+            
+<span class="fc" id="L78">            PathTile.Direction dir = connections.get(i);</span>
+            //PathTile tile = new PathTile(new SimpleIntegerProperty(x), new SimpleIntegerProperty(y));
+<span class="fc" id="L80">            x += dir.getXOffset();</span>
+<span class="fc" id="L81">            y += dir.getYOffset();</span>
+<span class="pc bpc" id="L82" title="2 of 6 branches missed.">            if (orderedPath.contains(Pair.with(x, y)) &amp;&amp; !(x == starting.getX() &amp;&amp; y == starting.getY())) {</span>
+<span class="nc" id="L83">                throw new IllegalArgumentException(&quot;Path crosses itself at direction index &quot; + i + &quot; (&quot; + dir + &quot;)&quot;);</span>
+            }
+            //onLoad(tile, connections.get(i - 1), dir);
+        }
+        // we should connect back to the starting point
+<span class="pc bpc" id="L88" title="2 of 4 branches missed.">        if (x != starting.getX() || y != starting.getY()) {</span>
+<span class="nc" id="L89">            throw new IllegalArgumentException(String.format(</span>
+                    &quot;Path must loop back around on itself, this path doesn't finish where it began, it finishes at %d, %d.&quot;,
+<span class="nc" id="L91">                    x, y));</span>
+        }
+        //onLoad(starting, connections.get(connections.size() - 1), connections.get(0));
+<span class="fc" id="L94">        return orderedPath;</span>
+    }
+
+    public Buildings createCampfireBuilding(LoopManiaWorld world, int x, int y) {
+<span class="fc" id="L98">        CampfireCard c = world.loadCampfireCard();</span>
+<span class="fc" id="L99">        return world.convertCardToBuildingByCoordinates(&quot;CampfireCard&quot;, 0, 0, x, y);</span>
+    }
+
+    public Buildings createVampireCastleBuilding(LoopManiaWorld world, int x, int y) {
+<span class="nc" id="L103">        VampireCastleCard c = world.loadVampireCard();</span>
+<span class="nc" id="L104">        return world.convertCardToBuildingByCoordinates(&quot;VampireCastleCard&quot;, 0, 0, x, y);</span>
+    }
+
+    public Buildings createZombiePitBuilding(LoopManiaWorld world, int x, int y) {
+<span class="fc" id="L108">        VampireCastleCard c = world.loadVampireCard();</span>
+<span class="fc" id="L109">        return world.convertCardToBuildingByCoordinates(&quot;ZombiePitCard&quot;, 0, 0, x, y);</span>
+    }
+
+    public Buildings createVillageBuilding(LoopManiaWorld world, Integer x, Integer y) {
+<span class="fc" id="L113">        VillageCard vc = world.loadVillageCard();</span>
+<span class="fc" id="L114">        return world.convertCardToBuildingByCoordinates(&quot;VillageCard&quot;, 0, 0, x, y);</span>
+    }
+
+    public Buildings createBarrackBuilding(LoopManiaWorld world, int x, int y) {
+<span class="fc" id="L118">        BarracksCard bc = world.loadBarracksCard();</span>
+<span class="fc" id="L119">        return world.convertCardToBuildingByCoordinates(&quot;BarracksCard&quot;, 0, 0, x, y);</span>
+    }
+
+    public Buildings createTrapBuilding(LoopManiaWorld world, Integer x, Integer y) {
+<span class="fc" id="L123">        TrapCard tc = world.loadTrapCard();</span>
+<span class="fc" id="L124">        return world.convertCardToBuildingByCoordinates(&quot;TrapCard&quot;, 0, 0, x, y);</span>
+    }
+
+    // public Buildings createTowerBuilding(LoopManiaWorld world, Integer x, Integer y) {
+        
+    // }
+
+    private JSONObject createMap(int i, int j) {
+<span class="fc" id="L132">        JSONObject world = new JSONObject(); </span>
+<span class="fc" id="L133">        world.put(&quot;type&quot;, &quot;path_tile&quot;); </span>
+<span class="fc" id="L134">        world.put(&quot;x&quot;, 0); world.put(&quot;y&quot;, 0); </span>
+
+<span class="fc" id="L136">        String[] path = {&quot;RIGHT&quot;, &quot;RIGHT&quot;, &quot;DOWN&quot;, &quot;RIGHT&quot;, &quot;RIGHT&quot;, &quot;UP&quot;, &quot;RIGHT&quot;, &quot;RIGHT&quot;, &quot;RIGHT&quot;,</span>
+            &quot;DOWN&quot;, &quot;DOWN&quot;, &quot;DOWN&quot;, &quot;DOWN&quot;, &quot;DOWN&quot;, &quot;DOWN&quot;, &quot;DOWN&quot;, &quot;DOWN&quot;, &quot;DOWN&quot;,
+            &quot;LEFT&quot;, &quot;LEFT&quot;, &quot;LEFT&quot;, &quot;UP&quot;, &quot;UP&quot;, &quot;RIGHT&quot;,
+            &quot;UP&quot;, &quot;UP&quot;, &quot;UP&quot;, &quot;UP&quot;, &quot;LEFT&quot;, &quot;LEFT&quot;, &quot;LEFT&quot;,
+            &quot;DOWN&quot;, &quot;DOWN&quot;, &quot;DOWN&quot;, &quot;DOWN&quot;, &quot;DOWN&quot;, &quot;DOWN&quot;, &quot;DOWN&quot;, &quot;DOWN&quot;,
+            &quot;RIGHT&quot;, &quot;RIGHT&quot;, &quot;RIGHT&quot;, &quot;RIGHT&quot;, &quot;RIGHT&quot;, &quot;DOWN&quot;, &quot;DOWN&quot;,
+            &quot;LEFT&quot;, &quot;LEFT&quot;, &quot;LEFT&quot;, &quot;LEFT&quot;, &quot;LEFT&quot;, &quot;LEFT&quot;, &quot;LEFT&quot;,
+            &quot;UP&quot;, &quot;UP&quot;, &quot;UP&quot;, &quot;UP&quot;, &quot;UP&quot;, &quot;UP&quot;, &quot;UP&quot;, &quot;UP&quot;, &quot;UP&quot;, &quot;UP&quot;, &quot;UP&quot;, &quot;UP&quot;, &quot;UP&quot;};
+        
+<span class="fc" id="L145">        JSONArray jsonPath = new JSONArray();</span>
+<span class="fc bfc" id="L146" title="All 2 branches covered.">        for (String direction: path) {</span>
+<span class="fc" id="L147">            jsonPath.put(direction);</span>
+        }
+
+<span class="fc" id="L150">        world.put(&quot;path&quot;, jsonPath);</span>
+<span class="fc" id="L151">        return world;</span>
+    }
+    
+}
+    
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

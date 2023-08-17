@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CampfireBuilding.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCo Coverage Report</a> &gt; <a href="index.source.html" class="el_package">unsw.loopmania</a> &gt; <span class="el_source">CampfireBuilding.java</span></div><h1>CampfireBuilding.java</h1><pre class="source lang-java linenums">package unsw.loopmania;
+
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.scene.image.Image;
+import java.io.File;
+import java.util.List;
+
+public class CampfireBuilding extends Buildings {
+
+<span class="fc" id="L10">    private double supportRadius = 3.0;</span>
+<span class="fc" id="L11">    private static int activeCampfires = 0;</span>
+<span class="fc" id="L12">    private boolean isActive = false;</span>
+    //private static boolean damageBoosted = false;
+
+    public CampfireBuilding(SimpleIntegerProperty x, SimpleIntegerProperty y) {
+<span class="fc" id="L16">        super(&quot;Campfire&quot;, x, y);</span>
+        //this.buildingImage = new Image((new File(&quot;src/images/campfire.png&quot;)).toURI().toString());
+        //this.supportRadius = 5;
+<span class="fc" id="L19">    }</span>
+
+    public void boostStats(Character character) {
+        // If charcater within the support radius and no other campfire is boosting character's stats -&gt; double damage.
+<span class="nc" id="L23">        character.setDamage(5);</span>
+<span class="nc" id="L24">    }</span>
+
+    public double getSupportRadius() {
+<span class="fc" id="L27">        return supportRadius;</span>
+    }
+
+    public int getActiveCampfires() {
+<span class="fc" id="L31">        return activeCampfires;</span>
+    }
+
+    public void decreaseActiveCampfires() {
+<span class="fc" id="L35">        CampfireBuilding.activeCampfires --;</span>
+<span class="fc" id="L36">    }</span>
+    
+    public void increaseActiveCampfires() {
+<span class="fc" id="L39">        CampfireBuilding.activeCampfires ++;</span>
+<span class="fc" id="L40">    }</span>
+
+    public void setIsActive(boolean isActive) {
+<span class="fc" id="L43">        this.isActive = isActive;</span>
+<span class="fc" id="L44">    }</span>
+
+    public boolean getIsActive() {
+<span class="fc" id="L47">        return isActive;</span>
+    }
+
+    public List&lt;Enemy&gt; performAction(Character character, List&lt;Enemy&gt; enemies) {
+<span class="fc bfc" id="L51" title="All 2 branches covered.">        if (Math.pow((character.getX() - getX()), 2) +  Math.pow((character.getY() - getY()), 2) &lt; Math.pow(getSupportRadius(), 2)) {   </span>
+
+<span class="fc bfc" id="L53" title="All 2 branches covered.">            if (getActiveCampfires() == 0) {</span>
+<span class="fc" id="L54">                increaseActiveCampfires();</span>
+<span class="fc" id="L55">                character.setDamage(character.getDamage() * 2);</span>
+<span class="fc" id="L56">                setIsActive(true);</span>
+            } 
+        
+        } else {
+<span class="fc bfc" id="L60" title="All 2 branches covered.">            if (getIsActive()) {</span>
+<span class="fc" id="L61">                setIsActive(false);</span>
+<span class="fc" id="L62">                decreaseActiveCampfires();</span>
+<span class="fc" id="L63">                character.setDamage(character.getDamage() / 2);</span>
+            }
+        }
+        
+<span class="pc bpc" id="L67" title="1 of 2 branches missed.">        for (Enemy e:enemies) {</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">            if (e.getType().equals(&quot;Vampire&quot;)) {</span>
+<span class="nc" id="L69">                ((Vampire) e).changeDirection(this);</span>
+            }
+<span class="nc" id="L71">        }</span>
+
+<span class="fc" id="L73">        return enemies;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

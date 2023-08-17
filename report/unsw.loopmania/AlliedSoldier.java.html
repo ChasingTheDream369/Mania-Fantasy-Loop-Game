@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AlliedSoldier.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCo Coverage Report</a> &gt; <a href="index.source.html" class="el_package">unsw.loopmania</a> &gt; <span class="el_source">AlliedSoldier.java</span></div><h1>AlliedSoldier.java</h1><pre class="source lang-java linenums">package unsw.loopmania;
+
+
+public class AlliedSoldier extends Players{
+
+    private static final double speed = 20;
+    private AlliedSoldierState whenZombie;
+    private AlliedSoldierState whenNotZombie;
+    private AlliedSoldierState currenState;
+    private PathPosition curPosition;
+    private boolean isZombie;
+
+    public AlliedSoldier(PathPosition position) {
+<span class="fc" id="L14">        super(position);</span>
+<span class="fc" id="L15">        setSpeed(speed);</span>
+<span class="fc" id="L16">        whenZombie = new WhenZombie(position);</span>
+<span class="fc" id="L17">        whenNotZombie = new WhenNotZombie(this);</span>
+<span class="fc" id="L18">        currenState = whenNotZombie;</span>
+<span class="fc" id="L19">        this.curPosition = position;</span>
+<span class="fc" id="L20">        this.isZombie = false;</span>
+<span class="fc" id="L21">        setHealth(2);</span>
+<span class="fc" id="L22">        setDamage(3);</span>
+<span class="fc" id="L23">        setType(&quot;AlliedSoldier&quot;);</span>
+<span class="fc" id="L24">    }</span>
+
+    public void changeToZombie() {
+<span class="nc" id="L27">        currenState = whenZombie;</span>
+<span class="nc" id="L28">    }</span>
+    
+    public void attack(Players player) {
+<span class="fc" id="L31">        currenState.allyAttack(player);</span>
+<span class="fc" id="L32">    }</span>
+
+    public PathPosition getPosition() {
+<span class="fc" id="L35">        return curPosition;</span>
+    }
+
+    public void setIsZombie(boolean zombie) {
+<span class="fc" id="L39">        this.isZombie = zombie;</span>
+<span class="fc" id="L40">    }</span>
+
+    public boolean getIsZombie() {
+<span class="fc" id="L43">        return isZombie;</span>
+    }
+
+    
+
+
+
+    
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

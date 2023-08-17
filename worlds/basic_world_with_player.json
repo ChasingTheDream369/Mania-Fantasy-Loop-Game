@@ -1,0 +1,25 @@
+{
+  "width": 3,
+  "height": 3,
+  "rare_items": ["TheOneRing"],
+  "goal-condition": { "goal": "AND", "subgoals":
+    [ { "goal": "cycles", "quantity": 100 },
+      { "goal": "OR", "subgoals":
+        [ {"goal": "experience", "quantity": 123456 },
+          {"goal": "gold", "quantity": 900000 }
+        ]
+      }
+    ]
+  }
+  ,
+  "entities": [
+    {"x": 0, "y": 0, "type": "hero_castle"}
+  ],
+  "path": {
+    "type": "path_tile",
+    "x": 0, "y": 0,
+    "path": [
+      "RIGHT", "RIGHT", "DOWN", "DOWN", "LEFT", "LEFT", "UP", "UP"
+    ]
+  }
+}

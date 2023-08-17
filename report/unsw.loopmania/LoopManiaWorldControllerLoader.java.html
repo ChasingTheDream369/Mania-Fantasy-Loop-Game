@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LoopManiaWorldControllerLoader.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCo Coverage Report</a> &gt; <a href="index.source.html" class="el_package">unsw.loopmania</a> &gt; <span class="el_source">LoopManiaWorldControllerLoader.java</span></div><h1>LoopManiaWorldControllerLoader.java</h1><pre class="source lang-java linenums">package unsw.loopmania;
+
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+
+import java.util.List;
+
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.Node;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
+import javafx.geometry.Rectangle2D;
+
+import java.io.File;
+
+/**
+ * A LoopManiaLoader that also creates the necessary ImageViews for the UI,
+ * connects them via listeners to the model, and creates a controller.
+ * 
+ * this should NOT be used to load any entities which spawn, or might be removed (use controller for that)
+ * since this doesnt add listeners or teardown functions (so it will be very hacky to remove event handlers)
+ */
+public class LoopManiaWorldControllerLoader extends LoopManiaWorldLoader {
+
+    private List&lt;ImageView&gt; entities;
+
+    //Images
+    private Image characterImage;
+    private Image pathTilesImage;
+
+    public LoopManiaWorldControllerLoader(String filename)
+            throws FileNotFoundException {
+<span class="nc" id="L35">        super(filename);</span>
+<span class="nc" id="L36">        entities = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L37">        characterImage = new Image((new File(&quot;src/images/human_new.png&quot;)).toURI().toString());</span>
+<span class="nc" id="L38">        pathTilesImage = new Image((new File(&quot;src/images/32x32GrassAndDirtPath.png&quot;)).toURI().toString());</span>
+        
+<span class="nc" id="L40">    }</span>
+
+    // TODO = load more entity types from the file
+    @Override
+    public void onLoad(Character character) {
+<span class="nc" id="L45">        ImageView view = new ImageView(characterImage);</span>
+<span class="nc" id="L46">        addEntity(character, view);</span>
+<span class="nc" id="L47">    }</span>
+
+    /**
+     * load path tile ImageView based on configuration in file.
+     * Note how src/images/32x32GrassAndDirtPath.png has 8 images within it
+     * x and y values we produce here are the coordinates of the top left of our sub-image, taken from the top-left of the pathTilesImage
+     */
+    @Override
+    public void onLoad(PathTile pathTile, PathTile.Direction into, PathTile.Direction out) {
+        // note https://stackoverflow.com/a/58041962
+        // we need to find the offset within the rectangle, we can do this from adjacencies
+<span class="nc" id="L58">        ImageView view = new ImageView(pathTilesImage);</span>
+        int x;
+        int y;
+
+<span class="nc bnc" id="L62" title="All 6 branches missed.">        if (into == out &amp;&amp; (into == PathTile.Direction.DOWN || into == PathTile.Direction.UP)) {</span>
+            // vertical, no corners
+<span class="nc" id="L64">            x = 32;</span>
+<span class="nc" id="L65">            y = 0;</span>
+<span class="nc bnc" id="L66" title="All 8 branches missed.">        } else if ((into == PathTile.Direction.DOWN &amp;&amp; out == PathTile.Direction.RIGHT) || (into == PathTile.Direction.LEFT &amp;&amp; out == PathTile.Direction.UP)) {</span>
+            // corner piece, turning left up, or turning down right
+<span class="nc" id="L68">            x = 0;</span>
+<span class="nc" id="L69">            y = 64;</span>
+<span class="nc bnc" id="L70" title="All 8 branches missed.">        } else if ((into == PathTile.Direction.UP &amp;&amp; out == PathTile.Direction.RIGHT) || (into == PathTile.Direction.LEFT &amp;&amp; out == PathTile.Direction.DOWN)) {</span>
+            // corner piece, turning up right, or turning left down
+<span class="nc" id="L72">            x = 32;</span>
+<span class="nc" id="L73">            y = 32;</span>
+<span class="nc bnc" id="L74" title="All 8 branches missed.">        } else if ((into == PathTile.Direction.DOWN &amp;&amp; out == PathTile.Direction.LEFT) || (into == PathTile.Direction.RIGHT &amp;&amp; out == PathTile.Direction.UP)) {</span>
+            // corner piece, turning down left, or turning right up
+<span class="nc" id="L76">            x = 32;</span>
+<span class="nc" id="L77">            y = 64;</span>
+<span class="nc bnc" id="L78" title="All 8 branches missed.">        } else if ((into == PathTile.Direction.RIGHT &amp;&amp; out == PathTile.Direction.DOWN) || (into == PathTile.Direction.UP &amp;&amp; out == PathTile.Direction.LEFT)) {</span>
+            // corner piece, turning right down, or turning up left
+<span class="nc" id="L80">            x = 0;</span>
+<span class="nc" id="L81">            y = 32;</span>
+<span class="nc bnc" id="L82" title="All 6 branches missed.">        } else if (into == out &amp;&amp; (into == PathTile.Direction.LEFT || into == PathTile.Direction.RIGHT)) {</span>
+            // horizontal, no corners
+<span class="nc" id="L84">            x = 0;</span>
+<span class="nc" id="L85">            y = 96;</span>
+        } else {
+<span class="nc" id="L87">            throw new RuntimeException(&quot;Not a valid adjacency mapping &quot; + into + &quot;-&gt;&quot; + out);</span>
+        }
+<span class="nc" id="L89">        Rectangle2D imagePart = new Rectangle2D(x, y, 32, 32);</span>
+<span class="nc" id="L90">        view.setViewport(imagePart);</span>
+<span class="nc" id="L91">        addEntity(pathTile, view);</span>
+<span class="nc" id="L92">    }</span>
+
+
+    /**
+     * pair the  backendentity and view, so the view tracks the coordinates of the entity
+     * @param entity backend entity
+     * @param view frontend image to be paired with the backend entity
+     */
+    private void addEntity(Entity entity, ImageView view) {
+<span class="nc" id="L101">        trackPositionOfNonSpawningEntities(entity, view);</span>
+<span class="nc" id="L102">        entities.add(view);</span>
+<span class="nc" id="L103">    }</span>
+
+
+    /**
+     * Track the position of entities which don't spawn or require removal.
+     * We only setup the node to follow the coordinates of the backend entity.&lt;br&gt;
+     * Items which potentially need to be removed should be spawned by controller, and have listener handles and teardown functions added.
+     * @param entity backend entity
+     * @param node frontend image to track the coordinates of the backend entity
+     */
+    private static void trackPositionOfNonSpawningEntities(Entity entity, Node node) {
+<span class="nc" id="L114">        GridPane.setColumnIndex(node, entity.getX());</span>
+<span class="nc" id="L115">        GridPane.setRowIndex(node, entity.getY());</span>
+<span class="nc" id="L116">        entity.x().addListener(new ChangeListener&lt;Number&gt;() {</span>
+            @Override
+            public void changed(ObservableValue&lt;? extends Number&gt; observable,
+                    Number oldValue, Number newValue) {
+<span class="nc" id="L120">                GridPane.setColumnIndex(node, newValue.intValue());</span>
+<span class="nc" id="L121">            }</span>
+        });
+<span class="nc" id="L123">        entity.y().addListener(new ChangeListener&lt;Number&gt;() {</span>
+            @Override
+            public void changed(ObservableValue&lt;? extends Number&gt; observable,
+                    Number oldValue, Number newValue) {
+<span class="nc" id="L127">                GridPane.setRowIndex(node, newValue.intValue());</span>
+<span class="nc" id="L128">            }</span>
+        });
+
+<span class="nc" id="L131">    }</span>
+
+    /**
+     * Create a controller that can be attached to the LoopManiaView with all the
+     * loaded entities.
+     * @return
+     * @throws FileNotFoundException
+     */
+    public LoopManiaWorldController loadController() throws FileNotFoundException {
+<span class="nc" id="L140">        return new LoopManiaWorldController(load(), entities);        </span>
+    }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

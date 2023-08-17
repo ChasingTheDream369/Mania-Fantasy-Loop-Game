@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TestCards.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCo Coverage Report</a> &gt; <a href="index.source.html" class="el_package">test</a> &gt; <span class="el_source">TestCards.java</span></div><h1>TestCards.java</h1><pre class="source lang-java linenums">package test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
+import java.util.List;
+
+import org.junit.Test;
+import org.javatuples.Pair;
+import unsw.loopmania.*;
+import unsw.loopmania.Character;
+
+
+<span class="fc" id="L14">public class TestCards {</span>
+
+
+    /**
+     * Assure the creation and deleting of cards is
+     * done correctly
+     */
+    @Test
+    public void testCardCreation() {
+<span class="fc" id="L23">        TestingWorld tw = new TestingWorld();</span>
+<span class="fc" id="L24">        LoopManiaWorld world =  tw.world();</span>
+
+<span class="fc" id="L26">        List&lt;Pair&lt;Integer, Integer&gt;&gt; orderedPath = world.getOrderedPath();</span>
+<span class="fc" id="L27">        PathPosition pathPosition = new PathPosition(1, orderedPath);</span>
+
+<span class="fc" id="L29">        Character c = new Character(pathPosition);</span>
+<span class="fc" id="L30">        world.setCharacter(c);</span>
+
+        // Check that CampfireCard is being Created correctly
+<span class="fc" id="L33">        world.loadCampfireCard();</span>
+<span class="fc" id="L34">        assertEquals(world.getCards().size(), 1);</span>
+
+        // Check that card is removed upon creating building
+<span class="fc" id="L37">        world.convertCardToBuildingByCoordinates(&quot;CampfireCard&quot;, 0, 0, 1, 1);</span>
+<span class="fc" id="L38">        assertEquals(world.getCards().size(), 0);</span>
+
+        // Check that TrapCard is being Created correctly
+<span class="fc" id="L41">        world.loadTrapCard();</span>
+<span class="fc" id="L42">        assertEquals(world.getCards().size(), 1);</span>
+
+        // Check that card is removed upon creating building
+<span class="fc" id="L45">        world.convertCardToBuildingByCoordinates(&quot;TrapCard&quot;, 0, 0, 0, 1);</span>
+<span class="fc" id="L46">        assertEquals(world.getCards().size(), 0);</span>
+
+        // Check that VampireCastleCard is being Created correctly
+<span class="fc" id="L49">        world.loadVampireCard();</span>
+<span class="fc" id="L50">        assertEquals(world.getCards().size(), 1);</span>
+
+        // Check that card is removed upon creating building
+<span class="fc" id="L53">        world.convertCardToBuildingByCoordinates(&quot;VampireCastleCard&quot;, 0, 0, 1, 1);</span>
+<span class="fc" id="L54">        assertEquals(world.getCards().size(), 0);</span>
+
+        // Check that ZombiePit card is being Created correctly
+<span class="fc" id="L57">        world.loadZombiePitCard();</span>
+<span class="fc" id="L58">        assertEquals(world.getCards().size(), 1);</span>
+
+        // Check that card is removed upon creating building
+<span class="fc" id="L61">        world.convertCardToBuildingByCoordinates(&quot;ZombiePitCard&quot;, 0, 0, 1, 1);</span>
+<span class="fc" id="L62">        assertEquals(world.getCards().size(), 0);</span>
+
+        // Check that Tower card is being Created correctly
+<span class="fc" id="L65">        world.loadTowerCard();</span>
+<span class="fc" id="L66">        assertEquals(world.getCards().size(), 1);</span>
+
+        // Check that Village card is removed upon creating building
+<span class="fc" id="L69">        world.convertCardToBuildingByCoordinates(&quot;TowerCard&quot;, 0, 0, 1, 1);</span>
+<span class="fc" id="L70">        assertEquals(world.getCards().size(), 0);</span>
+
+        // Check that card is being Created correctly
+<span class="fc" id="L73">        world.loadTrapCard();</span>
+<span class="fc" id="L74">        assertEquals(world.getCards().size(), 1);</span>
+
+        // Check that Barracks card is removed upon creating building
+<span class="fc" id="L77">        world.convertCardToBuildingByCoordinates(&quot;TrapCard&quot;, 0, 0, 0, 1);</span>
+<span class="fc" id="L78">        assertEquals(world.getCards().size(), 0);</span>
+<span class="fc" id="L79">    }</span>
+
+    @Test
+    public void testCardInventoryFull() {
+<span class="fc" id="L83">        TestingWorld tw = new TestingWorld();</span>
+<span class="fc" id="L84">        LoopManiaWorld world =  tw.world();</span>
+
+<span class="fc" id="L86">        List&lt;Pair&lt;Integer, Integer&gt;&gt; orderedPath = world.getOrderedPath();</span>
+<span class="fc" id="L87">        PathPosition pathPosition = new PathPosition(1, orderedPath);</span>
+
+<span class="fc" id="L89">        Character c = new Character(pathPosition);</span>
+<span class="fc" id="L90">        world.setCharacter(c);</span>
+        
+        // Load Tower Card and check that the first card in the world is tower card
+<span class="fc" id="L93">        world.loadTowerCard();</span>
+<span class="fc" id="L94">        Card card = world.getCards().get(0);</span>
+<span class="fc" id="L95">        assertEquals(card.getType(), &quot;TowerCard&quot;);</span>
+
+        // Make inventory Full
+<span class="fc bfc" id="L98" title="All 2 branches covered.">        for (int i = 0; i &lt; world.getWidth() - 1; i++) {</span>
+<span class="fc" id="L99">            world.loadTrapCard();</span>
+        }  
+
+<span class="fc" id="L102">        assertEquals(world.getCards().size(), 18);</span>
+        
+<span class="fc" id="L104">        assertEquals(c.getGold(), 15);</span>
+        
+        // Check inventory capped at world width and the first card removed
+<span class="fc" id="L107">        world.loadTrapCard();</span>
+<span class="fc" id="L108">        assertEquals(world.getCards().size(), 18);</span>
+<span class="fc" id="L109">        assertNotEquals(world.getCards().get(0).getType(), &quot;TowerCard&quot;);</span>
+        
+        //Get 5 gold as Reward
+<span class="fc" id="L112">        assertEquals(c.getGold(), 20);</span>
+        
+<span class="fc" id="L114">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

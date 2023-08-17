@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Enemy.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCo Coverage Report</a> &gt; <a href="index.source.html" class="el_package">unsw.loopmania</a> &gt; <span class="el_source">Enemy.java</span></div><h1>Enemy.java</h1><pre class="source lang-java linenums">package unsw.loopmania;
+import java.util.Random;
+import javafx.scene.image.Image;
+
+public abstract class Enemy extends Players {
+    
+    private double battleRadius;
+    private double supportRadius;
+    private boolean changeToAlliedSoldier;
+<span class="fc" id="L10">    public int currentAttackNum = 0;</span>
+    private double experienceLent;
+<span class="fc" id="L12">    protected String[] items = {&quot;Sword&quot;,&quot;Staff&quot;,&quot;Stake&quot;,&quot;Helmet&quot;,&quot;Shield&quot;,&quot;Armour&quot;,&quot;TheOneRing&quot;};</span>
+<span class="fc" id="L13">    protected String[] cards = {&quot;VampireCastleCard&quot;,&quot;ZombiePitCard&quot;,&quot;TowerCard&quot;,&quot;VillageCard&quot;,&quot;BarracksCard&quot;,&quot;TrapCard&quot;,&quot;CampfireCard&quot;};</span>
+    public Image image;
+
+    public Enemy(PathPosition position){
+<span class="fc" id="L17">        super(position);</span>
+<span class="fc" id="L18">        changeToAlliedSoldier = false;</span>
+<span class="fc" id="L19">    }    </span>
+
+    public Image getImage() {
+<span class="nc" id="L22">        return this.image;</span>
+    }
+
+    public double getBattleRadius() {
+<span class="fc" id="L26">        return battleRadius;</span>
+    }
+
+    public void setBattleRadius(double battleRadius) {
+<span class="fc" id="L30">        this.battleRadius = battleRadius;</span>
+<span class="fc" id="L31">    }</span>
+
+    public double getSupportRadius() {
+<span class="fc" id="L34">        return supportRadius;</span>
+    }
+
+    public void setSupportRadius(double supportRadius) {
+<span class="fc" id="L38">        this.supportRadius = supportRadius;</span>
+<span class="fc" id="L39">    }</span>
+
+    public void attack(Players player){
+<span class="fc" id="L42">        player.reduceHealth(this);</span>
+<span class="fc" id="L43">    }</span>
+
+    public void changeToEnemy(){
+<span class="nc" id="L46">        changeToAlliedSoldier = false;</span>
+<span class="nc" id="L47">    }</span>
+
+    public void changeToAlliedSoldier(){
+<span class="fc" id="L50">        changeToAlliedSoldier = true;</span>
+        // whenAlliedSoldier = new WhenAlliedSoldier(position);
+        // currentState = whenAlliedSoldier;
+<span class="fc" id="L53">    }</span>
+
+    public boolean isAlliedSoldier(){
+<span class="fc" id="L56">        return changeToAlliedSoldier;</span>
+    }
+
+    public void updateAttackNum(){
+<span class="fc" id="L60">        this.currentAttackNum += 1;</span>
+<span class="fc" id="L61">    }</span>
+
+    public void setExperience(double experienceLent) {
+<span class="fc" id="L64">        this.experienceLent = experienceLent;</span>
+<span class="fc" id="L65">    }</span>
+    
+    public double lendExperience() {
+<span class="nc" id="L68">        return experienceLent;</span>
+    }
+
+    abstract public void enemyAttack(Players player);
+
+
+    // =========================================
+    // this may not be the same for all enemies??
+    public void move(){
+        // this basic enemy moves in a random direction... 25% chance up or down, 50% chance not at all...
+<span class="nc" id="L78">        int directionChoice = (new Random()).nextInt(2);</span>
+<span class="nc bnc" id="L79" title="All 2 branches missed.">        if (directionChoice == 0){</span>
+<span class="nc" id="L80">            moveUpPath();</span>
+        }
+<span class="nc bnc" id="L82" title="All 2 branches missed.">        else if (directionChoice == 1){</span>
+<span class="nc" id="L83">            moveDownPath();</span>
+        }
+<span class="nc" id="L85">    }</span>
+    // ==========================================
+    public abstract GainsOnDefeat getGainsOnDefeat();
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

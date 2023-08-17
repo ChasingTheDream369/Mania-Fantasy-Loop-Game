@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TestCharacter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCo Coverage Report</a> &gt; <a href="index.source.html" class="el_package">test</a> &gt; <span class="el_source">TestCharacter.java</span></div><h1>TestCharacter.java</h1><pre class="source lang-java linenums">package test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.jupiter.api.Test;
+
+import javafx.beans.property.SimpleIntegerProperty;
+import unsw.loopmania.*;
+import org.javatuples.Pair;
+
+import unsw.loopmania.Character;
+
+<span class="fc" id="L18">public class TestCharacter {</span>
+
+    private static final double CHARACTERHEALTH = 100;
+    private static final double CHARACTERDAMAGE = 5;
+    private static final double INTIALEXPERIANCE = 0;
+    private static final double SLUGHEALTH = 15;
+    private static final double VAMPIREHEALTH = 30;
+    private static final double ZOMBIEHEALTH = 17;
+    private static final double ZOMBIEDAMAGE = 7;
+    private static final double VAMPIREDAMAGE = 9.0;
+    private static final double SLUGDAMAGE = 5;
+
+
+    @Test
+    public void testBasicFunctionality(){
+
+<span class="fc" id="L34">        Pair&lt;Integer, Integer&gt; pair1 = new Pair&lt;Integer, Integer&gt;(0,0); </span>
+<span class="fc" id="L35">        Pair&lt;Integer, Integer&gt; pair2 = new Pair&lt;Integer, Integer&gt;(0,1);</span>
+<span class="fc" id="L36">        Pair&lt;Integer, Integer&gt; pair3 = new Pair&lt;Integer, Integer&gt;(1,1);</span>
+<span class="fc" id="L37">        Pair&lt;Integer, Integer&gt; pair4 = new Pair&lt;Integer, Integer&gt;(2,1);</span>
+<span class="fc" id="L38">        Pair&lt;Integer, Integer&gt; pair5 = new Pair&lt;Integer, Integer&gt;(2,2);</span>
+
+<span class="fc" id="L40">        List&lt;Pair&lt;Integer, Integer&gt;&gt; orderedPath = new ArrayList&lt;Pair&lt;Integer, Integer&gt;&gt;();</span>
+
+<span class="fc" id="L42">        orderedPath.add(pair1);</span>
+<span class="fc" id="L43">        orderedPath.add(pair2);</span>
+<span class="fc" id="L44">        orderedPath.add(pair3);</span>
+<span class="fc" id="L45">        orderedPath.add(pair4);</span>
+<span class="fc" id="L46">        orderedPath.add(pair5);</span>
+
+<span class="fc" id="L48">        PathPosition pos1 = new PathPosition(0, orderedPath);</span>
+<span class="fc" id="L49">        PathPosition pos2 = new PathPosition(1, orderedPath);</span>
+<span class="fc" id="L50">        PathPosition pos3 = new PathPosition(2, orderedPath);</span>
+<span class="fc" id="L51">        PathPosition pos4 = new PathPosition(3, orderedPath);</span>
+<span class="fc" id="L52">        PathPosition pos5 = new PathPosition(4, orderedPath);</span>
+
+
+<span class="fc" id="L55">        Character character = new Character(pos1);</span>
+
+<span class="fc" id="L57">        assertEquals(CHARACTERHEALTH, character.getHealth());</span>
+<span class="fc" id="L58">        assertEquals(CHARACTERDAMAGE, character.getDamage());</span>
+<span class="fc" id="L59">        assertEquals(INTIALEXPERIANCE, character.getExperience());</span>
+
+<span class="fc" id="L61">        Vampire vampire = new Vampire(pos5);</span>
+<span class="fc" id="L62">        Zombie zombie = new Zombie(pos2);</span>
+<span class="fc" id="L63">        Slug slug = new Slug(pos3);</span>
+
+<span class="fc" id="L65">        character.characterAttack(vampire);</span>
+
+<span class="fc" id="L67">        assertEquals(VAMPIREHEALTH-CHARACTERDAMAGE, vampire.getHealth());</span>
+
+<span class="fc" id="L69">        character.characterAttack(zombie);</span>
+
+<span class="fc" id="L71">        assertEquals(ZOMBIEHEALTH-CHARACTERDAMAGE, zombie.getHealth());</span>
+
+<span class="fc" id="L73">        character.characterAttack(slug);</span>
+
+<span class="fc" id="L75">        assertEquals(SLUGHEALTH-CHARACTERDAMAGE, slug.getHealth());</span>
+
+<span class="fc" id="L77">        SimpleIntegerProperty x = new SimpleIntegerProperty();</span>
+<span class="fc" id="L78">        x.set(0);</span>
+<span class="fc" id="L79">        SimpleIntegerProperty y = new SimpleIntegerProperty();</span>
+<span class="fc" id="L80">        y.set(0);</span>
+
+<span class="fc" id="L82">        WeaponStrategy sword = new Sword(x, y);</span>
+
+<span class="fc" id="L84">        vampire.setHealth(VAMPIREHEALTH);</span>
+<span class="fc" id="L85">        zombie.setHealth(ZOMBIEHEALTH);</span>
+<span class="fc" id="L86">        slug.setHealth(SLUGHEALTH);</span>
+
+<span class="fc" id="L88">        character.setWeaponItem(sword);</span>
+        
+<span class="fc" id="L90">        character.characterAttack(vampire);</span>
+
+<span class="fc" id="L92">        assertEquals(VAMPIREHEALTH-(CHARACTERDAMAGE+3), vampire.getHealth());</span>
+
+<span class="fc" id="L94">        character.characterAttack(zombie);</span>
+
+<span class="fc" id="L96">        assertEquals(ZOMBIEHEALTH-(CHARACTERDAMAGE+3), zombie.getHealth());</span>
+
+<span class="fc" id="L98">        character.characterAttack(slug);</span>
+
+<span class="fc" id="L100">        assertEquals(SLUGHEALTH-(CHARACTERDAMAGE+3), slug.getHealth());</span>
+
+<span class="fc" id="L102">        DefenceStrategy armour = new Armour(x, y);</span>
+        
+<span class="fc" id="L104">        character.setDefenceItem(armour);</span>
+
+<span class="fc" id="L106">        vampire.enemyAttack(character);</span>
+
+        final double newCharacterHealth = CHARACTERHEALTH-VAMPIREDAMAGE/2;
+
+<span class="fc" id="L110">        assertEquals(newCharacterHealth, character.getHealth());</span>
+
+<span class="fc" id="L112">        zombie.enemyAttack(character);</span>
+
+        final double newCharacterHealth1 = newCharacterHealth-ZOMBIEDAMAGE/2;
+
+<span class="fc" id="L116">        assertEquals(newCharacterHealth1, character.getHealth());</span>
+
+<span class="fc" id="L118">        slug.enemyAttack(character);</span>
+
+        final double newCharacterHealth2 = newCharacterHealth1-SLUGDAMAGE/2;
+
+<span class="fc" id="L122">        assertEquals(newCharacterHealth2, character.getHealth());</span>
+
+<span class="fc" id="L124">        character.removeDefenceItem(armour);</span>
+
+
+        // ================================================
+
+<span class="fc" id="L129">        WeaponStrategy stake = new Stake(x,y);</span>
+
+<span class="fc" id="L131">        vampire.setHealth(VAMPIREHEALTH);</span>
+<span class="fc" id="L132">        zombie.setHealth(ZOMBIEHEALTH);</span>
+<span class="fc" id="L133">        slug.setHealth(SLUGHEALTH);</span>
+
+<span class="fc" id="L135">        character.setWeaponItem(stake);</span>
+
+<span class="fc" id="L137">        character.characterAttack(vampire);</span>
+
+<span class="fc" id="L139">        assertEquals(VAMPIREHEALTH-(CHARACTERDAMAGE+5), vampire.getHealth());</span>
+
+<span class="fc" id="L141">        character.characterAttack(zombie);</span>
+
+<span class="fc" id="L143">        assertEquals(ZOMBIEHEALTH-(CHARACTERDAMAGE+3), zombie.getHealth());</span>
+
+<span class="fc" id="L145">        character.characterAttack(slug);</span>
+
+<span class="fc" id="L147">        assertEquals(SLUGHEALTH-(CHARACTERDAMAGE+3), slug.getHealth());</span>
+
+
+
+        // ================================================
+
+<span class="fc" id="L153">        WeaponStrategy staff = new Staff(x,y);</span>
+
+<span class="fc" id="L155">        vampire.setHealth(VAMPIREHEALTH);</span>
+<span class="fc" id="L156">        zombie.setHealth(ZOMBIEHEALTH);</span>
+<span class="fc" id="L157">        slug.setHealth(SLUGHEALTH);</span>
+
+<span class="fc" id="L159">        character.setWeaponItem(staff);</span>
+
+<span class="fc" id="L161">        character.characterAttack(vampire);</span>
+
+<span class="fc" id="L163">        assertEquals(VAMPIREHEALTH-(CHARACTERDAMAGE+1), vampire.getHealth());</span>
+
+<span class="fc" id="L165">        character.characterAttack(zombie);</span>
+
+<span class="fc" id="L167">        assertEquals(ZOMBIEHEALTH-(CHARACTERDAMAGE+1), zombie.getHealth());</span>
+
+<span class="fc" id="L169">        character.characterAttack(slug);</span>
+
+<span class="fc" id="L171">        assertEquals(SLUGHEALTH-(CHARACTERDAMAGE+1), slug.getHealth());</span>
+
+
+        // ================================================
+
+<span class="fc" id="L176">        DefenceStrategy shield = new Shield(x,y);</span>
+
+<span class="fc" id="L178">        character.setDefenceItem(shield);</span>
+
+<span class="fc" id="L180">        vampire.enemyAttack(character);</span>
+
+        final double newCharacterHealth3 = newCharacterHealth2-(VAMPIREDAMAGE-VAMPIREDAMAGE*0.3);
+
+<span class="fc" id="L184">        assertEquals(newCharacterHealth3, character.getHealth());</span>
+
+<span class="fc" id="L186">        zombie.enemyAttack(character);</span>
+
+        final double newCharacterHealth4 = newCharacterHealth3-(ZOMBIEDAMAGE-ZOMBIEDAMAGE*0.2);
+
+<span class="fc" id="L190">        assertEquals(newCharacterHealth4, character.getHealth());</span>
+
+<span class="fc" id="L192">        slug.enemyAttack(character);</span>
+
+        final double newCharacterHealth5 = newCharacterHealth4-(SLUGDAMAGE-SLUGDAMAGE*0.1);
+
+<span class="fc" id="L196">        assertEquals(newCharacterHealth5, character.getHealth());</span>
+
+<span class="fc" id="L198">        character.removeDefenceItem(shield);</span>
+
+
+        //============================================================
+
+<span class="fc" id="L203">        DefenceStrategy helmet = new Helmet(x,y);</span>
+
+<span class="fc" id="L205">        character.setDefenceItem(helmet);</span>
+
+<span class="fc" id="L207">        vampire.enemyAttack(character);</span>
+
+        final double newCharacterHealth6 = newCharacterHealth5-(VAMPIREDAMAGE-VAMPIREDAMAGE*0.4);
+
+<span class="fc" id="L211">        assertEquals(newCharacterHealth6, character.getHealth());</span>
+
+<span class="fc" id="L213">        zombie.enemyAttack(character);</span>
+
+        final double newCharacterHealth7 = newCharacterHealth6-(ZOMBIEDAMAGE-ZOMBIEDAMAGE*0.3);
+
+<span class="fc" id="L217">        assertEquals(newCharacterHealth7, character.getHealth());</span>
+
+<span class="fc" id="L219">        slug.enemyAttack(character);</span>
+
+        final double newCharacterHealth8 = newCharacterHealth7-(SLUGDAMAGE-SLUGDAMAGE*0.2);
+
+<span class="fc" id="L223">        assertEquals(newCharacterHealth8, character.getHealth());</span>
+
+        
+
+        // =========================WITH HELMET=====================
+
+<span class="fc" id="L229">        vampire.setHealth(VAMPIREHEALTH);</span>
+<span class="fc" id="L230">        zombie.setHealth(ZOMBIEHEALTH);</span>
+<span class="fc" id="L231">        slug.setHealth(SLUGHEALTH);</span>
+
+<span class="fc" id="L233">        character.characterAttack(vampire);</span>
+
+<span class="fc" id="L235">        assertEquals(VAMPIREHEALTH-(CHARACTERDAMAGE-1), vampire.getHealth());</span>
+
+<span class="fc" id="L237">        character.characterAttack(zombie);</span>
+
+<span class="fc" id="L239">        assertEquals(ZOMBIEHEALTH-(CHARACTERDAMAGE-1), zombie.getHealth());</span>
+
+<span class="fc" id="L241">        character.characterAttack(slug);</span>
+
+<span class="fc" id="L243">        assertEquals(SLUGHEALTH-(CHARACTERDAMAGE-1), slug.getHealth());</span>
+
+
+<span class="fc" id="L246">    }</span>
+
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TestBuildings.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCo Coverage Report</a> &gt; <a href="index.source.html" class="el_package">test</a> &gt; <span class="el_source">TestBuildings.java</span></div><h1>TestBuildings.java</h1><pre class="source lang-java linenums">package test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Test;
+
+import javafx.beans.property.SimpleIntegerProperty;
+import unsw.loopmania.*;
+import unsw.loopmania.Character;
+
+import org.javatuples.Pair;
+
+
+<span class="fc" id="L18">public class TestBuildings {</span>
+
+
+    @Test
+    public void testCampfire() {
+<span class="fc" id="L23">        TestingWorld tw= new TestingWorld();</span>
+<span class="fc" id="L24">        LoopManiaWorld world =  tw.world();</span>
+
+<span class="fc" id="L26">        List&lt;Pair&lt;Integer, Integer&gt;&gt; orderedPath = world.getOrderedPath();</span>
+<span class="fc" id="L27">        PathPosition pathPosition = new PathPosition(1, orderedPath);</span>
+
+        //Test Placing Conditions
+        // Path Tile
+<span class="fc" id="L31">        assertEquals(world.buildingConditions(&quot;CampfireCard&quot;, pathPosition.getX().getValue(), pathPosition.getY().getValue()), false);</span>
+        // Placing On a non-path Tile not adjacent to the Path
+<span class="fc" id="L33">        assertEquals(world.buildingConditions(&quot;CampfireCard&quot;, 9, 2), true);</span>
+        // Placing on a path Tile adjacent to the path
+<span class="fc" id="L35">        assertEquals(world.buildingConditions(&quot;CampfireCard&quot;, 6, 3), true);</span>
+
+        // Testing Boosting stats
+<span class="fc" id="L38">        Character c = new Character(pathPosition);</span>
+<span class="fc" id="L39">        assertEquals(c.getDamage(), 5);</span>
+<span class="fc" id="L40">        world.setCharacter(c);</span>
+        
+<span class="fc" id="L42">        Buildings campfire1 = tw.createCampfireBuilding(world, 1, 1);</span>
+<span class="fc" id="L43">        world.buildingsRole();</span>
+<span class="fc" id="L44">        assertEquals(c.getDamage(), 10);</span>
+
+<span class="fc" id="L46">        Buildings campfire2 = tw.createCampfireBuilding(world, 1, 3);</span>
+<span class="fc" id="L47">        world.buildingsRole();</span>
+
+        //within radius of two cmpfires and damage stil 10
+<span class="fc" id="L50">        assertEquals(c.getDamage(), 10);</span>
+
+        // Move the character to get out of campfire range
+<span class="fc bfc" id="L53" title="All 2 branches covered.">        for (int i = 0; i &lt; 4; i++) {</span>
+<span class="fc" id="L54">            c.moveDownPath();</span>
+        }
+        
+<span class="fc" id="L57">        world.buildingsRole();</span>
+<span class="fc" id="L58">        assertEquals(c.getDamage(), 5);</span>
+<span class="fc" id="L59">    }</span>
+
+    @Test
+    public void TestVampireRunsAwayFromCampfire() {
+<span class="fc" id="L63">        TestingWorld tw= new TestingWorld();</span>
+<span class="fc" id="L64">        LoopManiaWorld world =  tw.world();</span>
+
+<span class="fc" id="L66">        List&lt;Pair&lt;Integer, Integer&gt;&gt; orderedPath = world.getOrderedPath();</span>
+<span class="fc" id="L67">        PathPosition pathPosition = new PathPosition(0, orderedPath);</span>
+        
+<span class="fc" id="L69">        Character c = new Character(pathPosition);</span>
+<span class="fc" id="L70">        world.setCharacter(c);</span>
+
+        // Creating the campfire building
+<span class="fc" id="L73">        Buildings campfire1 = tw.createCampfireBuilding(world, 1, 1);</span>
+
+        // Testing that vampire runs away from the campfire.
+<span class="fc" id="L76">        Enemy enemy = new Vampire(new PathPosition(5, orderedPath));</span>
+
+<span class="fc" id="L78">        world.buildingsRole();</span>
+<span class="fc" id="L79">        assertEquals(((Vampire) enemy).getReversed(), false);</span>
+<span class="fc" id="L80">        assertEquals(((Vampire) enemy).getReverseDirection(), false);</span>
+
+        // Moving the enemy inside the campfire's radius
+<span class="fc" id="L83">        enemy.move();</span>
+<span class="fc" id="L84">        world.buildingsRole();</span>
+<span class="fc" id="L85">        assertEquals(((Vampire) enemy).getReversed(), false);</span>
+<span class="fc" id="L86">    }</span>
+
+    @Test
+    public void testVampireCastle() {
+<span class="fc" id="L90">        TestingWorld tw= new TestingWorld();</span>
+<span class="fc" id="L91">        LoopManiaWorld world =  tw.world();</span>
+
+<span class="fc" id="L93">        List&lt;Pair&lt;Integer, Integer&gt;&gt; orderedPath = world.getOrderedPath();</span>
+<span class="fc" id="L94">        PathPosition pathPosition = new PathPosition(0, orderedPath);</span>
+
+<span class="fc" id="L96">        assertEquals(world.buildingConditions(&quot;VampireCastleCard&quot;, pathPosition.getX().getValue(), pathPosition.getY().getValue()), false);</span>
+<span class="fc" id="L97">        assertEquals(world.getCards().size(), 0);</span>
+<span class="fc" id="L98">        assertEquals(world.buildingConditions(&quot;VampireCastleCard&quot;, 1, 1), true);</span>
+
+        //Buildings vampCastle = tw.createVampireCastleBuilding(world, 1, 1);
+        
+<span class="fc" id="L102">        VampireCastleCard vcc = world.loadVampireCard();</span>
+<span class="fc" id="L103">        assertEquals(world.getCards().size(), 1);</span>
+<span class="fc" id="L104">        Buildings vampCastle = world.convertCardToBuildingByCoordinates(&quot;VampireCastleCard&quot;, 0, 0, 1, 1);</span>
+
+<span class="fc" id="L106">        assertEquals(world.getCards().size(), 0);</span>
+<span class="fc" id="L107">        Character c = new Character(pathPosition);</span>
+<span class="fc" id="L108">        world.setCharacter(c);</span>
+
+        List&lt;Enemy&gt; enemies;
+
+<span class="fc" id="L112">        enemies = world.possiblySpawnEnemies(1);</span>
+<span class="pc bpc" id="L113" title="1 of 2 branches missed.">        for (Enemy e : enemies) {</span>
+<span class="nc" id="L114">            assertNotEquals(e.getType(), &quot;Vampire&quot;);</span>
+<span class="nc" id="L115">        }</span>
+
+
+<span class="fc" id="L118">        enemies = world.possiblySpawnEnemies(5);</span>
+<span class="fc" id="L119">        int count = 0;</span>
+<span class="fc bfc" id="L120" title="All 2 branches covered.">        for (Enemy e : enemies) {</span>
+<span class="pc bpc" id="L121" title="1 of 2 branches missed.">            if (!e.getType().equals(&quot;Slug&quot;)) {</span>
+                //Checking the vampie is spawned in the adjacent path tile
+<span class="fc" id="L123">                assertEquals(e.getType(), &quot;Vampire&quot;);</span>
+<span class="fc" id="L124">                assertEquals(e.getX(), 1);</span>
+<span class="fc" id="L125">                assertEquals(e.getY(), 0);</span>
+<span class="fc" id="L126">                count++;</span>
+            }
+<span class="fc" id="L128">        }</span>
+<span class="fc" id="L129">        assertEquals(count, 1);</span>
+
+<span class="fc" id="L131">    }</span>
+
+    @Test
+    public void testBarracks() {
+<span class="fc" id="L135">        TestingWorld tw= new TestingWorld();</span>
+<span class="fc" id="L136">        LoopManiaWorld world =  tw.world();</span>
+
+<span class="fc" id="L138">        List&lt;Pair&lt;Integer, Integer&gt;&gt; orderedPath = world.getOrderedPath();</span>
+<span class="fc" id="L139">        PathPosition pathPosition = new PathPosition(1, orderedPath);</span>
+
+<span class="fc" id="L141">        assertEquals(world.buildingConditions(&quot;BarracksCard&quot;, pathPosition.getX().getValue(), pathPosition.getY().getValue()), true);</span>
+<span class="fc" id="L142">        assertEquals(world.buildingConditions(&quot;BarracksCard&quot;, 1, 1), false);</span>
+
+
+<span class="fc" id="L145">        Character c = new Character(pathPosition);</span>
+<span class="fc" id="L146">        world.setCharacter(c);</span>
+
+        
+<span class="fc" id="L149">        Buildings Barracks = tw.createBarrackBuilding(world, pathPosition.getX().getValue(), pathPosition.getY().getValue()); </span>
+        
+<span class="fc" id="L151">        assertEquals(world.getAlliedSoldiers().size(), 0);</span>
+
+<span class="fc" id="L153">        world.buildingsRole();</span>
+
+<span class="fc" id="L155">        assertEquals(world.getAlliedSoldiers().size(), 1);</span>
+        
+<span class="fc" id="L157">        AlliedSoldier as = world.getAlliedSoldiers().get(0);</span>
+<span class="fc" id="L158">        assertEquals(as.getX(), pathPosition.getX().getValue());</span>
+<span class="fc" id="L159">        assertEquals(as.getY(), pathPosition.getY().getValue());</span>
+
+<span class="fc" id="L161">        c.moveDownPath();</span>
+<span class="fc" id="L162">        world.buildingsRole();</span>
+<span class="fc" id="L163">        assertEquals(world.getAlliedSoldiers().size(), 1);</span>
+
+<span class="fc" id="L165">    }</span>
+
+    @Test
+    public void testTrap() {
+<span class="fc" id="L169">        TestingWorld tw= new TestingWorld();</span>
+<span class="fc" id="L170">        LoopManiaWorld world =  tw.world();</span>
+
+<span class="fc" id="L172">        List&lt;Pair&lt;Integer, Integer&gt;&gt; orderedPath = world.getOrderedPath();</span>
+<span class="fc" id="L173">        PathPosition pathPosition = new PathPosition(0, orderedPath);</span>
+<span class="fc" id="L174">        PathPosition pathPosition1 = new PathPosition(1, orderedPath);</span>
+
+<span class="fc" id="L176">        assertEquals(world.buildingConditions(&quot;TrapCard&quot;, pathPosition1.getX().getValue(), pathPosition1.getY().getValue()), true);</span>
+<span class="fc" id="L177">        assertEquals(world.buildingConditions(&quot;TrapCard&quot;, 1, 1), false);</span>
+
+<span class="fc" id="L179">        Character c = new Character(pathPosition);</span>
+<span class="fc" id="L180">        world.setCharacter(c);</span>
+
+<span class="fc" id="L182">        Enemy e = new Zombie(pathPosition1);</span>
+<span class="fc" id="L183">        assertEquals(e.getHealth(), 17);</span>
+<span class="fc" id="L184">        world.addEnemy(e);</span>
+
+<span class="fc" id="L186">        Buildings trapBuildings = tw.createTrapBuilding(world, pathPosition1.getX().getValue(), pathPosition1.getY().getValue());</span>
+
+
+<span class="fc" id="L189">        assertEquals(trapBuildings.shouldExist().getValue(), true);</span>
+<span class="fc" id="L190">        world.buildingsRole();</span>
+
+<span class="fc" id="L192">        assertEquals(e.getHealth(), 12);</span>
+<span class="fc" id="L193">        assertEquals(trapBuildings.shouldExist().getValue(), false);</span>
+
+<span class="fc" id="L195">    }</span>
+
+    @Test
+    public void testZombiePit() {
+<span class="fc" id="L199">        TestingWorld tw= new TestingWorld();</span>
+<span class="fc" id="L200">        LoopManiaWorld world =  tw.world();</span>
+
+<span class="fc" id="L202">        List&lt;Pair&lt;Integer, Integer&gt;&gt; orderedPath = world.getOrderedPath();</span>
+<span class="fc" id="L203">        PathPosition pathPosition = new PathPosition(0, orderedPath);</span>
+<span class="fc" id="L204">        PathPosition pathPosition1 = new PathPosition(1, orderedPath);</span>
+
+<span class="fc" id="L206">        Character c = new Character(pathPosition);</span>
+<span class="fc" id="L207">        world.setCharacter(c);</span>
+
+<span class="fc" id="L209">        assertEquals(world.buildingConditions(&quot;ZombiePitCard&quot;, pathPosition1.getX().getValue(), pathPosition1.getY().getValue()), false);</span>
+<span class="fc" id="L210">        assertEquals(world.buildingConditions(&quot;ZombiePitCard&quot;, 1, 1), true);</span>
+<span class="fc" id="L211">        assertEquals(world.buildingConditions(&quot;ZombiePitCard&quot;, 18, 1), false);</span>
+
+<span class="fc" id="L213">        Buildings zombiePit = tw.createZombiePitBuilding(world, 1, 1);</span>
+
+<span class="fc" id="L215">        c.moveDownPath();</span>
+        List&lt;Enemy&gt; enemies;
+<span class="fc" id="L217">        enemies = world.possiblySpawnEnemies(0);</span>
+
+<span class="fc bfc" id="L219" title="All 2 branches covered.">        for (Enemy e : enemies) {</span>
+<span class="fc" id="L220">            assertNotEquals(e.getType(), &quot;Zombie&quot;);</span>
+<span class="fc" id="L221">        }</span>
+
+<span class="fc" id="L223">        c.moveUpPath();</span>
+<span class="fc" id="L224">        enemies = world.possiblySpawnEnemies(1);</span>
+<span class="fc" id="L225">        int count = 0;</span>
+<span class="fc bfc" id="L226" title="All 2 branches covered.">        for (Enemy e : enemies) {</span>
+<span class="pc bpc" id="L227" title="1 of 2 branches missed.">            if (!e.getType().equals(&quot;Slug&quot;)) {</span>
+<span class="fc" id="L228">                assertEquals(e.getType(), &quot;Zombie&quot;);</span>
+<span class="fc" id="L229">                assertEquals(e.getX(), 1);</span>
+<span class="fc" id="L230">                assertEquals(e.getY(), 0);</span>
+<span class="fc" id="L231">                count++;</span>
+            }
+<span class="fc" id="L233">        }</span>
+
+<span class="fc" id="L235">        assertEquals(count, 1);</span>
+<span class="fc" id="L236">    }</span>
+
+    @Test
+    public void testVillage() {
+<span class="fc" id="L240">        TestingWorld tw= new TestingWorld();</span>
+<span class="fc" id="L241">        LoopManiaWorld world =  tw.world();</span>
+
+<span class="fc" id="L243">        List&lt;Pair&lt;Integer, Integer&gt;&gt; orderedPath = world.getOrderedPath();</span>
+<span class="fc" id="L244">        PathPosition pathPosition = new PathPosition(0, orderedPath);</span>
+<span class="fc" id="L245">        PathPosition pathPosition1 = new PathPosition(1, orderedPath);</span>
+
+<span class="fc" id="L247">        assertEquals(world.buildingConditions(&quot;VillageCard&quot;, pathPosition1.getX().getValue(), pathPosition1.getY().getValue()), true);</span>
+<span class="fc" id="L248">        assertEquals(world.buildingConditions(&quot;VillageCard&quot;, 1, 1), false);</span>
+
+<span class="fc" id="L250">        Character c = new Character(pathPosition);</span>
+<span class="fc" id="L251">        world.setCharacter(c);</span>
+<span class="fc" id="L252">        c.setHealth(50);</span>
+
+<span class="fc" id="L254">        Buildings village = tw.createVillageBuilding(world, pathPosition1.getX().getValue(), pathPosition1.getY().getValue());</span>
+
+        
+<span class="fc" id="L257">        assertEquals(c.getHealth(), 50);</span>
+<span class="fc" id="L258">        c.moveDownPath();</span>
+<span class="fc" id="L259">        world.buildingsRole();</span>
+
+<span class="fc" id="L261">        assertEquals(c.getHealth(), 100);</span>
+<span class="fc" id="L262">    }</span>
+
+    @Test
+    public void testTower() {
+<span class="fc" id="L266">        TestingWorld tw = new TestingWorld();</span>
+<span class="fc" id="L267">        LoopManiaWorld world =  tw.world();</span>
+
+<span class="fc" id="L269">        List&lt;Pair&lt;Integer, Integer&gt;&gt; orderedPath = world.getOrderedPath();</span>
+<span class="fc" id="L270">        PathPosition pathPosition = new PathPosition(0, orderedPath);</span>
+<span class="fc" id="L271">        PathPosition pathPosition1 = new PathPosition(1, orderedPath);</span>
+<span class="fc" id="L272">        PathPosition pathPosition2 = new PathPosition(2, orderedPath);</span>
+
+<span class="fc" id="L274">        Character c = new Character(pathPosition);</span>
+<span class="fc" id="L275">        world.setCharacter(c);</span>
+
+<span class="fc" id="L277">        assertEquals(world.buildingConditions(&quot;TowerCard&quot;, pathPosition1.getX().getValue(), pathPosition1.getY().getValue()), false);</span>
+<span class="fc" id="L278">        assertEquals(world.buildingConditions(&quot;TowerCard&quot;, 1, 1), true);</span>
+<span class="fc" id="L279">        assertEquals(world.buildingConditions(&quot;TowerCard&quot;, 18, 1), false);</span>
+
+<span class="fc" id="L281">        Enemy e1 = new Zombie(pathPosition1);</span>
+<span class="fc" id="L282">        Enemy e2 = new Vampire(pathPosition2);</span>
+
+<span class="fc" id="L284">        world.addEnemy(e1);</span>
+<span class="fc" id="L285">        world.addEnemy(e2);</span>
+
+<span class="fc" id="L287">        TowerCard tc = world.loadTowerCard();</span>
+<span class="fc" id="L288">        Buildings tower = world.convertCardToBuildingByCoordinates(&quot;TowerCard&quot;, 0, 0, 1, 1);</span>
+
+<span class="fc" id="L290">        assertEquals(e1.getHealth(), 17);</span>
+<span class="fc" id="L291">        assertEquals(e2.getHealth(), 30);</span>
+
+<span class="fc" id="L293">        world.buildingsRole();</span>
+        
+<span class="fc" id="L295">        assertEquals(e1.getHealth(), 15);</span>
+<span class="fc" id="L296">        assertEquals(e2.getHealth(), 28);</span>
+
+        //Making vampire move out of tower's range
+<span class="fc bfc" id="L299" title="All 2 branches covered.">        for (int i = 0; i &lt; 7; i++) {</span>
+<span class="fc" id="L300">            world.buildingsRole();</span>
+<span class="fc" id="L301">            e2.moveUpPath();</span>
+        }
+
+<span class="fc" id="L304">        assertEquals(e1.getHealth(), 1);</span>
+
+<span class="fc" id="L306">        world.buildingsRole();</span>
+        
+        // Zombie Dead
+<span class="fc" id="L309">        assertEquals(world.enemies.size(), 1);</span>
+
+<span class="fc" id="L311">        assertNotEquals(e2.getHealth(), 14);</span>
+
+<span class="fc" id="L313">    }</span>
+
+
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

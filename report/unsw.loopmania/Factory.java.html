@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Factory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCo Coverage Report</a> &gt; <a href="index.source.html" class="el_package">unsw.loopmania</a> &gt; <span class="el_source">Factory.java</span></div><h1>Factory.java</h1><pre class="source lang-java linenums">package unsw.loopmania;
+
+import java.io.File;
+import java.util.function.IntBinaryOperator;
+
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.scene.image.Image;
+import javafx.util.Pair;
+
+<span class="fc" id="L10">public class Factory {</span>
+	
+    public Card cardFactory(String type, SimpleIntegerProperty x, SimpleIntegerProperty y){
+<span class="nc bnc" id="L13" title="All 2 branches missed.">        if(type == null){</span>
+<span class="nc" id="L14">            return null;</span>
+        }		
+
+<span class="nc bnc" id="L17" title="All 2 branches missed.">        if(type.equalsIgnoreCase(&quot;BarracksCard&quot;)){</span>
+<span class="nc" id="L18">            return new BarracksCard(x, y);</span>
+          
+<span class="nc bnc" id="L20" title="All 2 branches missed.">        } else if(type.equalsIgnoreCase(&quot;CampfireCard&quot;)){</span>
+<span class="nc" id="L21">            return new CampfireCard(x, y);</span>
+          
+<span class="nc bnc" id="L23" title="All 2 branches missed.">        } else if(type.equalsIgnoreCase(&quot;TowerCard&quot;)){</span>
+<span class="nc" id="L24">            return new TowerCard(x, y);</span>
+
+<span class="nc bnc" id="L26" title="All 2 branches missed.">        } else if(type.equalsIgnoreCase(&quot;TrapCard&quot;)){</span>
+<span class="nc" id="L27">            return new TrapCard(x, y);</span>
+
+<span class="nc bnc" id="L29" title="All 2 branches missed.">        } else if(type.equalsIgnoreCase(&quot;VampireCastleCard&quot;)){</span>
+<span class="nc" id="L30">            return new VampireCastleCard(x, y);</span>
+
+<span class="nc bnc" id="L32" title="All 2 branches missed.">        } else if(type.equalsIgnoreCase(&quot;VillageCard&quot;)){</span>
+<span class="nc" id="L33">            return new VillageCard(x, y);</span>
+
+<span class="nc bnc" id="L35" title="All 2 branches missed.">        } else if(type.equalsIgnoreCase(&quot;ZombiePitCard&quot;)){</span>
+<span class="nc" id="L36">            return new ZombiePitCard(x, y);</span>
+
+        } 
+     
+<span class="nc" id="L40">       return null;</span>
+    }
+
+    public Buildings buildingsFactory(String type, SimpleIntegerProperty x, SimpleIntegerProperty y) {
+<span class="pc bpc" id="L44" title="1 of 2 branches missed.">        if(type == null){</span>
+<span class="nc" id="L45">            return null;</span>
+        }		
+
+<span class="fc bfc" id="L48" title="All 2 branches covered.">        if(type.equalsIgnoreCase(&quot;BarracksCard&quot;)){</span>
+<span class="fc" id="L49">            return new BarracksBuilding(x, y);</span>
+          
+<span class="fc bfc" id="L51" title="All 2 branches covered.">        } else if(type.equalsIgnoreCase(&quot;CampfireCard&quot;)){</span>
+<span class="fc" id="L52">            return new CampfireBuilding(x, y);</span>
+          
+<span class="fc bfc" id="L54" title="All 2 branches covered.">        } else if(type.equalsIgnoreCase(&quot;TowerCard&quot;)){</span>
+<span class="fc" id="L55">            return new TowerBuilding(x, y);</span>
+
+<span class="fc bfc" id="L57" title="All 2 branches covered.">        } else if(type.equalsIgnoreCase(&quot;TrapCard&quot;)){</span>
+<span class="fc" id="L58">            return new TrapBuilding(x, y);</span>
+
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        } else if(type.equalsIgnoreCase(&quot;VampireCastleCard&quot;)){</span>
+<span class="fc" id="L61">            return new VampireCastleBuilding(x, y);</span>
+
+<span class="fc bfc" id="L63" title="All 2 branches covered.">        } else if(type.equalsIgnoreCase(&quot;VillageCard&quot;)){</span>
+<span class="fc" id="L64">            return new VillageBuilding(x, y);</span>
+
+<span class="pc bpc" id="L66" title="1 of 2 branches missed.">        } else if(type.equalsIgnoreCase(&quot;ZombiePitCard&quot;)){</span>
+<span class="fc" id="L67">            return new ZombiePitBuilding(x, y);</span>
+        } 
+
+<span class="nc" id="L70">       return null;</span>
+    }
+
+    public BasicItems getBasicItem(String type, int x, int y) {
+<span class="nc bnc" id="L74" title="All 7 branches missed.">        switch(type){</span>
+            case &quot;Sword&quot;:
+<span class="nc" id="L76">                return new Sword(new SimpleIntegerProperty(x),new SimpleIntegerProperty(y));</span>
+
+            case &quot;Stake&quot;:
+<span class="nc" id="L79">                return new Stake(new SimpleIntegerProperty(x),new SimpleIntegerProperty(y));</span>
+
+            case &quot;Staff&quot;:
+<span class="nc" id="L82">                return new Staff(new SimpleIntegerProperty(x),new SimpleIntegerProperty(y));</span>
+
+            case &quot;Helmet&quot;:
+<span class="nc" id="L85">                return new Helmet(new SimpleIntegerProperty(x),new SimpleIntegerProperty(y));</span>
+
+            case &quot;Armour&quot;:
+<span class="nc" id="L88">                return new Armour(new SimpleIntegerProperty(x),new SimpleIntegerProperty(y));</span>
+
+            case &quot;Shield&quot;:
+<span class="nc" id="L91">                return new Shield(new SimpleIntegerProperty(x),new SimpleIntegerProperty(y));</span>
+            
+            default:
+<span class="nc" id="L94">                return null;</span>
+        }
+    }
+
+    public int getItemPrice(String type) {
+<span class="nc bnc" id="L99" title="All 8 branches missed.">        switch(type) {</span>
+            case &quot;Sword&quot;:
+<span class="nc" id="L101">                return 5;</span>
+
+            case &quot;Stake&quot;:
+<span class="nc" id="L104">                return 7;</span>
+
+            case &quot;Staff&quot;:
+<span class="nc" id="L107">                return 5;</span>
+
+            case &quot;Helmet&quot;:
+<span class="nc" id="L110">                return 5;</span>
+
+            case &quot;Armour&quot;:
+<span class="nc" id="L113">                return 7;</span>
+
+            case &quot;Shield&quot;:
+<span class="nc" id="L116">                return 7;</span>
+
+            case &quot;HealthPotion&quot;:
+<span class="nc" id="L119">                return 8;</span>
+            
+            default:
+<span class="nc" id="L122">                return 0;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

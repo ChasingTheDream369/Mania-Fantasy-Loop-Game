@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TestGoals.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCo Coverage Report</a> &gt; <a href="index.source.html" class="el_package">test</a> &gt; <span class="el_source">TestGoals.java</span></div><h1>TestGoals.java</h1><pre class="source lang-java linenums">package test;
+import unsw.loopmania.LoopManiaWorld;
+import unsw.loopmania.PathPosition;
+import unsw.loopmania.PathTile;
+import unsw.loopmania.Subgoals;
+import unsw.loopmania.Goal;
+import unsw.loopmania.GoalCondtions;
+import org.javatuples.Pair;
+import org.json.JSONArray;
+import org.junit.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javafx.beans.property.SimpleIntegerProperty;
+import unsw.loopmania.Character;
+import unsw.loopmania.Zombie;
+import unsw.loopmania.Vampire;
+import unsw.loopmania.Slug;
+import unsw.loopmania.Enemy;
+import unsw.loopmania.Sword;
+
+<span class="pc bpc" id="L26" title="1 of 2 branches missed.">public class TestGoals {</span>
+
+    public List&lt;Pair&lt;Integer, Integer&gt;&gt; loadPathTiles(String[] path, int width, int height) {
+        
+<span class="fc" id="L30">        PathTile starting = new PathTile(new SimpleIntegerProperty(0), new SimpleIntegerProperty(0));</span>
+<span class="pc bpc" id="L31" title="4 of 8 branches missed.">        if (starting.getY() &gt;= height || starting.getY() &lt; 0 || starting.getX() &gt;= width || starting.getX() &lt; 0) {</span>
+<span class="nc" id="L32">            throw new IllegalArgumentException(&quot;Starting point of path is out of bounds&quot;);</span>
+        }
+        // load connected path tiles
+<span class="fc" id="L35">        List&lt;PathTile.Direction&gt; connections = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L36" title="All 2 branches covered.">        for (Object dir: path){</span>
+<span class="fc" id="L37">            connections.add(Enum.valueOf(PathTile.Direction.class, dir.toString()));</span>
+        }
+    
+<span class="pc bpc" id="L40" title="1 of 2 branches missed.">        if (connections.size() == 0) {</span>
+<span class="nc" id="L41">            throw new IllegalArgumentException(</span>
+                &quot;This path just consists of a single tile, it needs to consist of multiple to form a loop.&quot;);
+        }
+    
+        // load the first position into the orderedPath
+<span class="fc" id="L46">        PathTile.Direction first = connections.get(0);</span>
+<span class="fc" id="L47">        List&lt;Pair&lt;Integer, Integer&gt;&gt; orderedPath = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L48">        orderedPath.add(Pair.with(starting.getX(), starting.getY()));</span>
+    
+<span class="fc" id="L50">        int x = starting.getX() + first.getXOffset();</span>
+<span class="fc" id="L51">        int y = starting.getY() + first.getYOffset();</span>
+    
+        // add all coordinates of the path into the orderedPath
+<span class="fc bfc" id="L54" title="All 2 branches covered.">        for (int i = 1; i &lt; connections.size(); i++) {</span>
+<span class="fc" id="L55">            orderedPath.add(Pair.with(x, y));</span>
+            
+<span class="pc bpc" id="L57" title="4 of 8 branches missed.">            if (y &gt;= height || y &lt; 0 || x &gt;= width || x &lt; 0) {</span>
+<span class="nc" id="L58">                throw new IllegalArgumentException(&quot;Path goes out of bounds at direction index &quot; + (i - 1) + &quot; (&quot; + connections.get(i - 1) + &quot;)&quot;);</span>
+            }
+            
+<span class="fc" id="L61">            PathTile.Direction dir = connections.get(i);</span>
+<span class="fc" id="L62">            PathTile tile = new PathTile(new SimpleIntegerProperty(x), new SimpleIntegerProperty(y));</span>
+<span class="fc" id="L63">            x += dir.getXOffset();</span>
+<span class="fc" id="L64">            y += dir.getYOffset();</span>
+<span class="pc bpc" id="L65" title="2 of 6 branches missed.">            if (orderedPath.contains(Pair.with(x, y)) &amp;&amp; !(x == starting.getX() &amp;&amp; y == starting.getY())) {</span>
+<span class="nc" id="L66">                throw new IllegalArgumentException(&quot;Path crosses itself at direction index &quot; + i + &quot; (&quot; + dir + &quot;)&quot;);</span>
+            }
+        }
+        // we should connect back to the starting point
+<span class="pc bpc" id="L70" title="2 of 4 branches missed.">        if (x != starting.getX() || y != starting.getY()) {</span>
+<span class="nc" id="L71">            throw new IllegalArgumentException(String.format(</span>
+                    &quot;Path must loop back around on itself, this path doesn't finish where it began, it finishes at %d, %d.&quot;,
+<span class="nc" id="L73">                    x, y));</span>
+        }
+<span class="fc" id="L75">        return orderedPath;</span>
+    }
+
+    /**
+     * Sword inflicts 3 damage points to all the enemies.
+     * @throws FileNotFoundException
+     */
+    @Test
+    public void testGoals() throws FileNotFoundException {
+
+<span class="fc" id="L85">        String[] Path = {&quot;RIGHT&quot;, &quot;RIGHT&quot;, &quot;DOWN&quot;, &quot;DOWN&quot;, &quot;LEFT&quot;, &quot;LEFT&quot;, &quot;UP&quot;, &quot;UP&quot;};</span>
+<span class="fc" id="L86">        JSONArray rareItems = new JSONArray();</span>
+<span class="fc" id="L87">        rareItems.put(&quot;TheOneRing&quot;);</span>
+        
+<span class="fc" id="L89">        Subgoals characterGoals= new Subgoals(&quot;AND&quot;);</span>
+<span class="fc" id="L90">        Goal firstGoal = new Goal(&quot;cycles&quot;, 5);</span>
+<span class="fc" id="L91">        characterGoals.addGoal(firstGoal);</span>
+
+<span class="fc" id="L93">        Subgoals childGoal = new Subgoals(&quot;OR&quot;);</span>
+<span class="fc" id="L94">        characterGoals.addGoal(childGoal);</span>
+
+<span class="fc" id="L96">        Goal secondGoal = new Goal(&quot;experience&quot;, 14);</span>
+<span class="fc" id="L97">        Goal thirdGoal = new Goal(&quot;gold&quot;, 27);</span>
+<span class="fc" id="L98">        childGoal.addGoal(secondGoal);</span>
+<span class="fc" id="L99">        childGoal.addGoal(thirdGoal);</span>
+
+<span class="fc" id="L101">        List&lt;Pair&lt;Integer, Integer&gt;&gt; orderedPath = loadPathTiles(Path, 8, 14);</span>
+<span class="fc" id="L102">        LoopManiaWorld world = new LoopManiaWorld(8, 14, orderedPath, characterGoals, rareItems);</span>
+
+<span class="fc" id="L104">        PathPosition pos1 = new PathPosition(0, orderedPath);</span>
+<span class="fc" id="L105">        Character character = new Character(pos1);</span>
+
+<span class="fc" id="L107">        character.setExperience(14);</span>
+<span class="fc" id="L108">        character.ReceiveGoldItems(12);</span>
+<span class="fc" id="L109">        character.setNumOfCycles(5);</span>
+        
+<span class="pc bpc" id="L111" title="2 of 4 branches missed.">        assert(characterGoals.evaluateOverallGoal(character));</span>
+
+<span class="fc" id="L113">        Subgoals characterGoals2= new Subgoals(&quot;OR&quot;);</span>
+<span class="fc" id="L114">        Goal firstGoal2 = new Goal(&quot;experience&quot;, 200);</span>
+<span class="fc" id="L115">        characterGoals.addGoal(firstGoal2);</span>
+
+<span class="fc" id="L117">        Subgoals childGoal2 = new Subgoals(&quot;OR&quot;);</span>
+<span class="fc" id="L118">        characterGoals2.addGoal(childGoal2);</span>
+
+<span class="fc" id="L120">        Goal secondGoal2 = new Goal(&quot;cycles&quot;, 12);</span>
+<span class="fc" id="L121">        Goal thirdGoal2 = new Goal(&quot;gold&quot;, 28);</span>
+<span class="fc" id="L122">        childGoal.addGoal(secondGoal2);</span>
+<span class="fc" id="L123">        childGoal.addGoal(thirdGoal2);</span>
+
+<span class="fc" id="L125">        character.setExperience(200);</span>
+<span class="fc" id="L126">        character.setNumOfCycles(12);</span>
+
+<span class="pc bpc" id="L128" title="2 of 4 branches missed.">        assert(characterGoals.evaluateOverallGoal(character));</span>
+
+
+        
+<span class="fc" id="L132">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
